@@ -1,0 +1,20 @@
+<library path="src">
+  <class name="Experiment UI" type="stl_experiment_ui.my_module.ExperimentUI" base_class_type="rqt_gui_py::Plugin">
+    <description>
+      User interface for Handovers Controllers Study
+    </description>
+    <qtgui>
+      <!-- optional grouping...
+      <group>
+        <label>Group</label>
+      </group>
+      <group>
+        <label>Subgroup</label>
+      </group>
+      -->
+      <label>Handovers Controllers Study UI</label>
+      <icon type="theme">system-help</icon>
+      <statustip>User interface for Handovers Controllers Study.</statustip>
+    </qtgui>
+  </class>
+</library>
