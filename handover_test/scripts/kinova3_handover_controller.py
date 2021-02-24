@@ -343,7 +343,7 @@ class PIDVelocityController(object):
             difference = math.sqrt((target[0]-trans_robot[0])**2+(target[1]-trans_robot[1])**2+(target[2]-trans_robot[2])**2)
             #print difference
             velocity = min(kp*difference, self.config.max_velocity)
-            print(velocity)
+            # print(velocity)
             if difference < threshold:
                 velocity = 0.0
                 reached = True

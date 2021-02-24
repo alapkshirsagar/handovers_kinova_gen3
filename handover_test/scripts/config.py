@@ -11,7 +11,7 @@ class HandoverConfig(object):
     package_root = ''
 
     # Control Type: 'pid' or 'dmp' or 'mpc'
-    control_type = 'mpc'
+    control_type = 'pid'
 
 ## Gripper controller parameters
 

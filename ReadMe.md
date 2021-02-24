@@ -23,6 +23,13 @@ roslaunch mocap_optitrack mocap.launch
 
 ```
 
+Terminal-3 (Velocity Publisher)
+```
+export ROS_IP=192.168.0.102
+source devel/setup.bash
+rosrun handover_test kinova_velocity_publisher.py
+```
+
 Terminal-3 (Main Controller)
 ```
 export ROS_IP=192.168.0.102
