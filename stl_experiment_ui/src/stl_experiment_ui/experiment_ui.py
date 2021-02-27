@@ -25,7 +25,7 @@ class ExperimentUI(Plugin):
         # Create QDialog
         self._widget = QDialog()
         # Get path to UI file which should be in the "resource" folder of this package
-        ui_file = os.path.join(rospkg.RosPack().get_path('stl_experiment_ui'), 'user_interface', 'ExperimentUI.ui')
+        ui_file = os.path.join(rospkg.RosPack().get_path('stl_experiment_ui'), 'user_interface', 'common_dashboard.ui')
         # Extend the widget with all attributes and children from UI file
         loadUi(ui_file, self._widget)
         # Give QObjects reasonable names
@@ -43,7 +43,10 @@ class ExperimentUI(Plugin):
         ## Controller Design Windows
         self.stl_design_ui = STLdesignUI()
         self.pv_design_ui = PVdesignUI()
-        self.stl_design_ui._widget.show()
+        if unknowns[0] == 'mpc':
+            self.stl_design_ui._widget.show()
+        elif unknowns[0] == 'pid':
+            self.pv_design_ui._widget.show()
 
 
     def shutdown_plugin(self):
@@ -84,12 +87,38 @@ class STLdesignUI(Plugin):
         # tell from pane to pane.
         self._widget.setWindowTitle(self._widget.windowTitle())
 
+        # Slider functionality
+        self.slider1value = self._widget.horizontalSlider.value()/10.0
+        self.slider2value = self._widget.horizontalSlider_2.value()/10.0
+        self.slider3value = self._widget.horizontalSlider_3.value()/10.0
+
+        self._widget.horizontalSlider.valueChanged.connect(self.changeValueSlider1)
+        self._widget.horizontalSlider_2.valueChanged.connect(self.changeValueSlider2)
+        self._widget.horizontalSlider_3.valueChanged.connect(self.changeValueSlider3)
+
         # Button functionality
-        self._widget.generate.connect(self.generate_controller)
+        self._widget.generateControllerButton.clicked.connect(self.generate_controller)
 
     def shutdown_plugin(self):
         # TODO unregister all publishers here
         pass
+
+    def generate_controller(self):
+        rospy.set_param('mpc_t_1', self.slider1value)
+        rospy.set_param('mpc_t_2', self.slider2value)
+        rospy.set_param('mpc_t_3', self.slider3value)
+        
+    def changeValueSlider1(self):
+        self.slider1value = self._widget.horizontalSlider.value()/10.0
+        self._widget.label_12.setText(str(self.slider1value))
+    
+    def changeValueSlider2(self):
+        self.slider2value = self._widget.horizontalSlider_2.value()/10.0
+        self._widget.label_13.setText(str(self.slider2value))
+    
+    def changeValueSlider3(self):
+        self.slider3value = self._widget.horizontalSlider_3.value()/10.0
+        self._widget.label_14.setText(str(self.slider3value))
 
 class PVdesignUI(Plugin):
 
@@ -109,8 +138,35 @@ class PVdesignUI(Plugin):
         # plugin at once, these lines add number to make it easy to 
         # tell from pane to pane.
         self._widget.setWindowTitle(self._widget.windowTitle())
+        # Slider functionality
+        self.slider1value = self._widget.horizontalSlider.value()/10.0
+        self.slider2value = self._widget.horizontalSlider_2.value()/10.0
+        self.slider3value = self._widget.horizontalSlider_3.value()/10.0
 
+        self._widget.horizontalSlider.valueChanged.connect(self.changeValueSlider1)
+        self._widget.horizontalSlider_2.valueChanged.connect(self.changeValueSlider2)
+        self._widget.horizontalSlider_3.valueChanged.connect(self.changeValueSlider3)
+
+        # Button functionality
+        self._widget.generateControllerButton.clicked.connect(self.generate_controller)
 
     def shutdown_plugin(self):
         # TODO unregister all publishers here
         pass
+
+    def generate_controller(self):
+        rospy.set_param('pid_kp_1', self.slider1value)
+        rospy.set_param('pid_kp_2', self.slider2value)
+        rospy.set_param('pid_kp_3', self.slider3value)
+        
+    def changeValueSlider1(self):
+        self.slider1value = self._widget.horizontalSlider.value()/10.0
+        self._widget.label_12.setText(str(self.slider1value))
+    
+    def changeValueSlider2(self):
+        self.slider2value = self._widget.horizontalSlider_2.value()/10.0
+        self._widget.label_13.setText(str(self.slider2value))
+    
+    def changeValueSlider3(self):
+        self.slider3value = self._widget.horizontalSlider_3.value()/10.0
+        self._widget.label_14.setText(str(self.slider3value))

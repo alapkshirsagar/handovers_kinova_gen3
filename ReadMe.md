@@ -10,29 +10,29 @@ path is in ``/CatkinWorkspaces/HandoversKinovaGen3/``.
 
 Terminal-1 (Kinova Driver)
 ```
-export ROS_MASTER_URI=http://192.168.0.102:11311
-export ROS_IP=192.168.0.102
+export ROS_MASTER_URI=http://192.168.0.103:11311
+export ROS_IP=192.168.0.103
 source devel/setup.bash
 roslaunch kortex_driver kortex_driver.launch gripper:=robotiq_2f_85
 ```
 Terminal-2 (ROS-Motive bridge)
 ```
-export ROS_IP=192.168.0.102
+export ROS_IP=192.168.0.103
 source devel/setup.bash
 roslaunch mocap_optitrack mocap.launch
 
 ```
 
-Terminal-3 (Velocity Publisher)
+Terminal-3 (User Interface)
 ```
-export ROS_IP=192.168.0.102
+export ROS_IP=192.168.0.103
 source devel/setup.bash
-rosrun handover_test kinova_velocity_publisher.py
+rqt --standalone stl_experiment_ui
 ```
 
 Terminal-3 (Main Controller)
 ```
-export ROS_IP=192.168.0.102
+export ROS_IP=192.168.0.103
 source devel/setup.bash
 rosrun handover_test kinova3_handover_controller.py
 ```

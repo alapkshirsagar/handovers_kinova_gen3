@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <widget class="QDialog" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>799</width>
-    <height>700</height>
+    <height>666</height>
    </rect>
   </property>
   <property name="palette">
@@ -428,7 +428,15 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="centralwidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>791</width>
+     <height>680</height>
+    </rect>
+   </property>
    <widget class="QTableWidget" name="tableWidget">
     <property name="geometry">
      <rect>
@@ -497,6 +505,22 @@
       </brush>
      </property>
     </item>
+    <item row="0" column="1">
+     <property name="text">
+      <string>3</string>
+     </property>
+     <property name="textAlignment">
+      <set>AlignCenter</set>
+     </property>
+    </item>
+    <item row="0" column="2">
+     <property name="text">
+      <string>5</string>
+     </property>
+     <property name="textAlignment">
+      <set>AlignCenter</set>
+     </property>
+    </item>
     <item row="1" column="0">
      <property name="text">
       <string>M</string>
@@ -512,6 +536,22 @@
         <blue>62</blue>
        </color>
       </brush>
+     </property>
+    </item>
+    <item row="1" column="1">
+     <property name="text">
+      <string>5</string>
+     </property>
+     <property name="textAlignment">
+      <set>AlignCenter</set>
+     </property>
+    </item>
+    <item row="1" column="2">
+     <property name="text">
+      <string>8</string>
+     </property>
+     <property name="textAlignment">
+      <set>AlignCenter</set>
      </property>
     </item>
     <item row="2" column="0">
@@ -531,6 +571,22 @@
       </brush>
      </property>
     </item>
+    <item row="2" column="1">
+     <property name="text">
+      <string>6</string>
+     </property>
+     <property name="textAlignment">
+      <set>AlignCenter</set>
+     </property>
+    </item>
+    <item row="2" column="2">
+     <property name="text">
+      <string>9</string>
+     </property>
+     <property name="textAlignment">
+      <set>AlignCenter</set>
+     </property>
+    </item>
    </widget>
    <widget class="QSlider" name="horizontalSlider">
     <property name="geometry">
@@ -540,6 +596,12 @@
       <width>311</width>
       <height>81</height>
      </rect>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>100</number>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
@@ -554,6 +616,12 @@
       <height>81</height>
      </rect>
     </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>100</number>
+    </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
@@ -566,6 +634,12 @@
       <width>311</width>
       <height>81</height>
      </rect>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>100</number>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
@@ -1191,7 +1265,7 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="generateControllerButton">
     <property name="geometry">
      <rect>
       <x>310</x>
@@ -1241,7 +1315,16 @@
     </rect>
    </property>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>3</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

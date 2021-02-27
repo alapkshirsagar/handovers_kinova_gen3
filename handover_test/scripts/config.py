@@ -28,7 +28,7 @@ class HandoverConfig(object):
 
     handover_zone_threshold = 0.5 #in m
 
-    handover_zone_boundaries = [0.5, 0.8, 0.0 , 0.4] # [x_min, x_max, y_min, y_max]
+    handover_zone_boundaries = [-0.5, 1.5, -1.5 , 1.5] # [x_min, x_max, y_min, y_max]
 
     safety_zone_boundaries = [0.0, 0.5, 0.0, 0.4] # [x_min, x_max, y_min, y_max]
 
@@ -67,7 +67,7 @@ class HandoverConfig(object):
     fixed_handover_location = [0.6, 0, 0.4]
 
     # Robot home location (in robot frame)
-    hover_location = [0.0,-0.3,0.1]
+    hover_location = [0.1,-0.3,0.1]
     object_location = [0.0,-0.3,0.05]
     object_orientation = [180,0,90]
 
