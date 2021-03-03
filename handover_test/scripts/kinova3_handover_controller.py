@@ -113,6 +113,7 @@ class PIDVelocityController(object):
         self.config = config
         self.kinova_controller = kinova_controller
         self.velocity_publisher = rospy.Publisher(self.config.arm_velocity_pub_topic, TwistCommand, queue_size=10)
+        self.timer_start_request = rospy.Publisher('/timer_start_request', String, queue_size=10)
         self.tf_listener = tf.TransformListener()
         self.soundHandle = SoundClient()
         rospy.sleep(1.0)
@@ -187,11 +188,13 @@ class PIDVelocityController(object):
         while (not self.check_human_handover_zone()):
             rospy.sleep(0.02)
         print('Human entered handover zone, moving towards human hand')
+        self.timer_start_request.publish(rospy.get_param('timing_constraints'))
         self.robot_move_proportional('human_hand', pid_kp)
 
         # Open gripper
         print('Hand close to gripper, opening gripper')
         self.kinova_controller.send_gripper_command_client(self.config.gripper_open)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
+        self.timer_start_request.publish('stop')
 
         # Go to home position
         print('Object grasped, moving to hover position')
@@ -504,6 +507,8 @@ class MPCVelocityController(object):
         self.config = config
         self.kinova_controller = kinova_controller
         self.velocity_publisher = rospy.Publisher(self.config.arm_velocity_pub_topic, TwistCommand, queue_size=10)
+        self.timer_start_request = rospy.Publisher('/timer_start_request', String, queue_size=10)
+
         self.tf_listener = tf.TransformListener()
 
         self.nx = 3   # number of state
@@ -733,11 +738,13 @@ class MPCVelocityController(object):
         while (not self.check_human_handover_zone()):
             rospy.sleep(0.02)
         print('Human entered handover zone, moving towards human hand')
+        self.timer_start_request.publish(rospy.get_param('timing_constraints'))
         self.robot_move_mpc('human_hand', reach_time)
 
         # Open gripper
         print('Hand close to gripper, opening gripper')
         self.kinova_controller.send_gripper_command_client(self.config.gripper_open)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
+        self.timer_start_request.publish('stop')
 
         # Go to home position
         print('Object grasped, moving to hover position')

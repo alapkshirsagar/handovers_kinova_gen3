@@ -27,14 +27,14 @@ Terminal-3 (User Interface)
 ```
 export ROS_IP=192.168.0.103
 source devel/setup.bash
-rqt --standalone stl_experiment_ui
+rqt --standalone stl_experiment_ui --args pid
 ```
 
 Terminal-3 (Main Controller)
 ```
 export ROS_IP=192.168.0.103
 source devel/setup.bash
-rosrun handover_test kinova3_handover_controller.py
+rosrun handover_test task_planner.py trial pid
 ```
 
 MATLAB PC:
