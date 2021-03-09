@@ -15,22 +15,22 @@ class HandoverConfig(object):
 
 ## Gripper controller parameters
 
-    gripper_open = 0.0  # fraction between [0,1]
+    gripper_open = 0.45  # fraction between [0,1]
 
-    gripper_close = 0.8  #  fraction between [0,1]
+    gripper_close = 0.65  #  fraction between [0,1]
 
     finger_max_turn = 6800     # max thread rotation for one finger
 
-    object_transfer_threshold = 0.15 #in m STL controller reach phase ends
+    # object_transfer_threshold = 0.25 #in m STL controller reach phase ends
 
 ## Arm controller parameters
-    offset_gripper_object = np.array([0.0,0.0,0.5])
+    offset_gripper_object = np.array([0.0,0.0,0.2])
 
     handover_zone_threshold = 0.5 #in m
 
     handover_zone_boundaries = [-0.5, 1.5, -1.5 , 1.5] # [x_min, x_max, y_min, y_max]
 
-    safety_zone_boundaries = [0.0, 0.5, 0.0, 0.4] # [x_min, x_max, y_min, y_max]
+    safety_zone_boundaries = [0.0, 0.0, 0.0, 0.0] # [x_min, x_max, y_min, y_max]
 
     retreat_kp = 1.0
 
@@ -60,15 +60,15 @@ class HandoverConfig(object):
 
 
     # pid_velocity_threshold = 0.05 #0.015
-    pid_distance_threshold = 0.05 #0.015
+    pid_distance_threshold = 0.15 #0.015
 
 
     # Handover location for offline handover (in robot frame)
     fixed_handover_location = [0.6, 0, 0.4]
 
     # Robot home location (in robot frame)
-    hover_location = [0.1,-0.3,0.1]
-    object_location = [0.0,-0.3,0.05]
+    object_location = [0.27,-0.132,0.106]
+    hover_location = [0.27,-0.132,0.106+0.15]
     object_orientation = [180,0,90]
 
     # Robot home location (in OptiTrack frame)

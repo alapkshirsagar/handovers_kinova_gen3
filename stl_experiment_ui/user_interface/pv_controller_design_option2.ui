@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>799</width>
-    <height>666</height>
+    <height>665</height>
    </rect>
   </property>
   <property name="palette">
@@ -507,7 +507,7 @@
     </item>
     <item row="0" column="1">
      <property name="text">
-      <string>1</string>
+      <string>3</string>
      </property>
      <property name="textAlignment">
       <set>AlignCenter</set>
@@ -515,7 +515,7 @@
     </item>
     <item row="0" column="2">
      <property name="text">
-      <string>4</string>
+      <string>5</string>
      </property>
      <property name="textAlignment">
       <set>AlignCenter</set>
@@ -540,7 +540,7 @@
     </item>
     <item row="1" column="1">
      <property name="text">
-      <string>2</string>
+      <string>4</string>
      </property>
      <property name="textAlignment">
       <set>AlignCenter</set>
@@ -548,7 +548,7 @@
     </item>
     <item row="1" column="2">
      <property name="text">
-      <string>5</string>
+      <string>6</string>
      </property>
      <property name="textAlignment">
       <set>AlignCenter</set>
@@ -573,7 +573,7 @@
     </item>
     <item row="2" column="1">
      <property name="text">
-      <string>3</string>
+      <string>5</string>
      </property>
      <property name="textAlignment">
       <set>AlignCenter</set>
@@ -581,7 +581,7 @@
     </item>
     <item row="2" column="2">
      <property name="text">
-      <string>6</string>
+      <string>7</string>
      </property>
      <property name="textAlignment">
       <set>AlignCenter</set>
@@ -598,10 +598,10 @@
      </rect>
     </property>
     <property name="minimum">
-     <number>1</number>
+     <number>10</number>
     </property>
     <property name="maximum">
-     <number>80</number>
+     <number>100</number>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
@@ -617,10 +617,10 @@
      </rect>
     </property>
     <property name="minimum">
-     <number>1</number>
+     <number>10</number>
     </property>
     <property name="maximum">
-     <number>80</number>
+     <number>100</number>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
@@ -636,10 +636,10 @@
      </rect>
     </property>
     <property name="minimum">
-     <number>1</number>
+     <number>10</number>
     </property>
     <property name="maximum">
-     <number>80</number>
+     <number>100</number>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
@@ -649,9 +649,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>240</y>
+      <y>230</y>
       <width>761</width>
-      <height>41</height>
+      <height>61</height>
      </rect>
     </property>
     <property name="palette">
@@ -1090,7 +1090,7 @@
      <number>0</number>
     </property>
     <property name="text">
-     <string>Time taken by the robot to reach the handover location (seconds)</string>
+     <string>Robot's Speed Multiplier</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1147,14 +1147,40 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>260</x>
       <y>310</y>
-      <width>31</width>
+      <width>21</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>0.1s</string>
+     <string>0.1</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>390</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0.1</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>470</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0.1</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_8">
@@ -1167,7 +1193,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>8s</string>
+     <string>1</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_9">
@@ -1180,7 +1206,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>8s</string>
+     <string>1</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_10">
@@ -1193,7 +1219,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>8s</string>
+     <string>1</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_11">
@@ -1227,7 +1253,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0.10</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1243,7 +1269,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0.10</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1259,7 +1285,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>0</string>
+     <string>0.10</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1278,30 +1304,43 @@
      <string>Generate Controller</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_6">
+   <widget class="QLabel" name="label_15">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>390</y>
-      <width>31</width>
+      <x>480</x>
+      <y>330</y>
+      <width>211</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>0.1s</string>
+     <string>x  (distance from human hand)</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_7">
+   <widget class="QLabel" name="label_16">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>470</y>
-      <width>31</width>
+      <x>480</x>
+      <y>410</y>
+      <width>211</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>0.1s</string>
+     <string>x  (distance from human hand)</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_17">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>490</y>
+      <width>211</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>x  (distance from human hand)</string>
     </property>
    </widget>
   </widget>

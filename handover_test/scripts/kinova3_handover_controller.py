@@ -87,23 +87,30 @@ class KinovaHandoverController:
 
             #*******************************************************************************
             # Set the reference frame to "Mixed"
+            print(pickup_location)
             success &= self.kinova_controller.set_cartesian_reference_frame_client()
+            hover_location = [pickup_location[0], pickup_location[1], pickup_location[2] + 0.15]
 
-
-            # Hover over object
-            rospy.sleep(1.0)
+            # ## Open gripper
+            self.kinova_controller.send_gripper_command_client(self.config.gripper_open)
 
             ## Hover over pickup location
-            self.kinova_controller.action_arm_pose(pickup_location + [0,0,0.1], self.config.object_orientation)
+            self.kinova_controller.action_arm_pose(hover_location, self.config.object_orientation)
 
-            ## Go down
+            rospy.sleep(1.0)
+
+            # ## Go down
             self.kinova_controller.action_arm_pose(pickup_location, self.config.object_orientation)
+            rospy.sleep(1.0)
 
-            ## Close gripper
+
+            # ## Close gripper
             self.kinova_controller.send_gripper_command_client(self.config.gripper_close)
 
-            ## Go up
-            self.kinova_controller.action_arm_pose(pickup_location + [0,0,0.1], self.config.object_orientation)
+            # ## Go up
+            self.kinova_controller.action_arm_pose(hover_location, self.config.object_orientation)
+            rospy.sleep(1.0)
+
 
 
 
@@ -526,6 +533,12 @@ class MPCVelocityController(object):
         rospy.sleep(1.0)
         self.soundHandle.stopAll()
 
+    def mpc_failure_recovery(self):
+        # Send robot to home position
+        self.kinova_controller.action_arm_pose(self.config.hover_location, self.config.object_orientation)
+        self.timer_start_request.publish('abort')
+
+
     def robot_move_mpc(self, goal, reach_time):
         reached = False
         rate = rospy.Rate(1.0/self.delta_t)
@@ -578,8 +591,13 @@ class MPCVelocityController(object):
             print("Running MPC with reach time", t_reach)
             difference = math.sqrt((target[0]-trans_robot[0])**2+(target[1]-trans_robot[1])**2+(target[2]-trans_robot[2])**2)
             #print difference
-            ox, oy, oz, oux, ouy, ouz = self.mpc_control(x_old, u_old, target, i)
-            if difference < threshold :
+            status, ox, oy, oz, oux, ouy, ouz = self.mpc_control(x_old, u_old, target, i)
+            
+            if status is not cvxpy.OPTIMAL:
+                self.mpc_failure_recovery()
+                reached = True
+
+            if difference < threshold:
                 velocity_x = 0.0
                 velocity_y = 0.0
                 velocity_z = 0.0
@@ -640,7 +658,7 @@ class MPCVelocityController(object):
 
 
         #print(self.x0)
-        return ox, oy, oz, oux, ouy, ouz
+        return prob.status, ox, oy, oz, oux, ouy, ouz
 
     def compute_cost(self, x, u, x_old, u_old, x_target, i):
         cost = 0.0

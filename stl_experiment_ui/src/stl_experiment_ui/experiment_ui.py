@@ -74,12 +74,13 @@ class ExperimentUI(Plugin):
 
     def vaccine_stack_status_subscriber_callback(self, message):
         vaccine_stack_status = message.data.split(',')
-        for i in vaccine_stack_status:
-            self.vaccine_stack_status.append(i)
+        for i in range(0,3):
+            self.vaccine_stack_status[i] = int(float(vaccine_stack_status[i]))
         self.start_test_signal.emit(True)
 
     def update_vaccine_stack(self):
         self._widget.show()
+        print(self.vaccine_stack_status)
         for i in range(0,3):
             item = QTableWidgetItem(str(self.vaccine_stack_status[i]))
             item.setTextAlignment(Qt.AlignCenter)
@@ -107,6 +108,8 @@ class ExperimentUI(Plugin):
 
 class TimerUI(Plugin):
     timer_start_signal = Signal(bool)
+    stl_abort_signal = Signal(bool)
+
     def __init__(self):
         QDialog.__init__(self)
         # Create QDialog
@@ -134,6 +137,9 @@ class TimerUI(Plugin):
         self._widget.lcdNumber.setDigitCount(len(time))
         self._widget.lcdNumber.display(time)
 
+        #STL failure feedback
+        self.stl_abort_signal.connect(self.stl_feedback)
+
         # Subscribers
         self.timer_start_request = rospy.Subscriber("/timer_start_request", String, self.start_timer_subscriber_callback)
 
@@ -152,8 +158,11 @@ class TimerUI(Plugin):
     def start_timer_subscriber_callback(self, message):
         if message.data == 'stop':
             self.timer_start_signal.emit(False)
+        elif message.data == 'abort':
+            self.stl_abort_signal.emit(True)
         else:
             self.timing_constraints = message.data.split(',')
+            self.stl_abort_signal.emit(False)
             self.timer_start_signal.emit(True)
 
 
@@ -188,6 +197,20 @@ class TimerUI(Plugin):
         self._widget.lcdNumber.display(time)
 
 
+    def stl_feedback(self, event):
+        if event:
+            stylesheet = \
+                "QWidget {\n" \
+                + "color: rgb(255,0,0);\n" \
+                + "}"
+            self._widget.label_2.setStyleSheet(stylesheet)
+            self.timer_start_signal.emit(False)
+        else:
+            stylesheet = \
+                "QWidget {\n" \
+                + "color: rgb(255,255,255);\n" \
+                + "}"
+            self._widget.label_2.setStyleSheet(stylesheet)
 
     def shutdown_plugin(self):
         # TODO unregister all publishers here
@@ -265,9 +288,9 @@ class PVdesignUI(Plugin):
         # tell from pane to pane.
         self._widget.setWindowTitle(self._widget.windowTitle())
         # Slider functionality
-        self.slider1value = self._widget.horizontalSlider.value()/10.0
-        self.slider2value = self._widget.horizontalSlider_2.value()/10.0
-        self.slider3value = self._widget.horizontalSlider_3.value()/10.0
+        self.slider1value = self._widget.horizontalSlider.value()/100.0
+        self.slider2value = self._widget.horizontalSlider_2.value()/100.0
+        self.slider3value = self._widget.horizontalSlider_3.value()/100.0
 
         self._widget.horizontalSlider.valueChanged.connect(self.changeValueSlider1)
         self._widget.horizontalSlider_2.valueChanged.connect(self.changeValueSlider2)
@@ -286,13 +309,13 @@ class PVdesignUI(Plugin):
         rospy.set_param('pid_kp_3', self.slider3value)
         
     def changeValueSlider1(self):
-        self.slider1value = self._widget.horizontalSlider.value()/10.0
+        self.slider1value = self._widget.horizontalSlider.value()/100.0
         self._widget.label_12.setText(str(self.slider1value))
     
     def changeValueSlider2(self):
-        self.slider2value = self._widget.horizontalSlider_2.value()/10.0
+        self.slider2value = self._widget.horizontalSlider_2.value()/100.0
         self._widget.label_13.setText(str(self.slider2value))
     
     def changeValueSlider3(self):
-        self.slider3value = self._widget.horizontalSlider_3.value()/10.0
+        self.slider3value = self._widget.horizontalSlider_3.value()/100.0
         self._widget.label_14.setText(str(self.slider3value))

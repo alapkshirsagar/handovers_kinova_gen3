@@ -172,7 +172,8 @@ class KinovaController:
         # Call the service
         rospy.loginfo("Sending the robot to the cartesian pose...")
         try:
-            self.play_cartesian_trajectory(req)
+            resp = self.play_cartesian_trajectory(req)
+            return resp
         except rospy.ServiceException:
             rospy.logerr("Failed to call PlayCartesianTrajectory")
             return False
