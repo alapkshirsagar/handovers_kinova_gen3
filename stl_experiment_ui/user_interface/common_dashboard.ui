@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>908</width>
-    <height>220</height>
+    <width>960</width>
+    <height>260</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -455,7 +455,7 @@
     <rect>
      <x>30</x>
      <y>60</y>
-     <width>551</width>
+     <width>651</width>
      <height>131</height>
     </rect>
    </property>
@@ -543,6 +543,11 @@
      <string/>
     </property>
    </column>
+   <column>
+    <property name="text">
+     <string/>
+    </property>
+   </column>
    <item row="0" column="0">
     <property name="text">
      <string>1</string>
@@ -571,7 +576,7 @@
    </item>
    <item row="0" column="1">
     <property name="text">
-     <string>S</string>
+     <string>G</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -588,7 +593,7 @@
    </item>
    <item row="0" column="2">
     <property name="text">
-     <string>S</string>
+     <string>G</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -605,7 +610,7 @@
    </item>
    <item row="0" column="3">
     <property name="text">
-     <string>M</string>
+     <string>Y</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -614,15 +619,15 @@
      <brush brushstyle="SolidPattern">
       <color alpha="255">
        <red>252</red>
-       <green>175</green>
-       <blue>62</blue>
+       <green>233</green>
+       <blue>79</blue>
       </color>
      </brush>
     </property>
    </item>
    <item row="0" column="4">
     <property name="text">
-     <string>M</string>
+     <string>Y</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -631,15 +636,15 @@
      <brush brushstyle="SolidPattern">
       <color alpha="255">
        <red>252</red>
-       <green>175</green>
-       <blue>62</blue>
+       <green>233</green>
+       <blue>79</blue>
       </color>
      </brush>
     </property>
    </item>
    <item row="0" column="5">
     <property name="text">
-     <string>L</string>
+     <string>R</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -650,6 +655,32 @@
        <red>239</red>
        <green>41</green>
        <blue>41</blue>
+      </color>
+     </brush>
+    </property>
+   </item>
+   <item row="0" column="6">
+    <property name="text">
+     <string>R</string>
+    </property>
+    <property name="textAlignment">
+     <set>AlignCenter</set>
+    </property>
+    <property name="background">
+     <brush brushstyle="SolidPattern">
+      <color alpha="255">
+       <red>239</red>
+       <green>41</green>
+       <blue>41</blue>
+      </color>
+     </brush>
+    </property>
+    <property name="foreground">
+     <brush brushstyle="NoBrush">
+      <color alpha="255">
+       <red>0</red>
+       <green>0</green>
+       <blue>0</blue>
       </color>
      </brush>
     </property>
@@ -673,7 +704,7 @@
    </item>
    <item row="1" column="1">
     <property name="text">
-     <string>S</string>
+     <string>G</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -699,7 +730,7 @@
    </item>
    <item row="1" column="2">
     <property name="text">
-     <string>M</string>
+     <string>Y</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -708,8 +739,8 @@
      <brush brushstyle="SolidPattern">
       <color alpha="255">
        <red>252</red>
-       <green>175</green>
-       <blue>62</blue>
+       <green>233</green>
+       <blue>79</blue>
       </color>
      </brush>
     </property>
@@ -725,7 +756,7 @@
    </item>
    <item row="1" column="3">
     <property name="text">
-     <string>M</string>
+     <string>Y</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -734,15 +765,32 @@
      <brush brushstyle="SolidPattern">
       <color alpha="255">
        <red>252</red>
-       <green>175</green>
-       <blue>62</blue>
+       <green>233</green>
+       <blue>79</blue>
       </color>
      </brush>
     </property>
    </item>
    <item row="1" column="4">
     <property name="text">
-     <string>L</string>
+     <string>Y</string>
+    </property>
+    <property name="textAlignment">
+     <set>AlignCenter</set>
+    </property>
+    <property name="background">
+     <brush brushstyle="SolidPattern">
+      <color alpha="255">
+       <red>252</red>
+       <green>233</green>
+       <blue>79</blue>
+      </color>
+     </brush>
+    </property>
+   </item>
+   <item row="1" column="5">
+    <property name="text">
+     <string>R</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -757,9 +805,9 @@
      </brush>
     </property>
    </item>
-   <item row="1" column="5">
+   <item row="1" column="6">
     <property name="text">
-     <string>L</string>
+     <string>R</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -793,7 +841,7 @@
    </item>
    <item row="2" column="1">
     <property name="text">
-     <string>S</string>
+     <string>G</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -810,7 +858,7 @@
    </item>
    <item row="2" column="2">
     <property name="text">
-     <string>S</string>
+     <string>G</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -827,7 +875,24 @@
    </item>
    <item row="2" column="3">
     <property name="text">
-     <string>M</string>
+     <string>G</string>
+    </property>
+    <property name="textAlignment">
+     <set>AlignCenter</set>
+    </property>
+    <property name="background">
+     <brush brushstyle="SolidPattern">
+      <color alpha="255">
+       <red>0</red>
+       <green>255</green>
+       <blue>0</blue>
+      </color>
+     </brush>
+    </property>
+   </item>
+   <item row="2" column="4">
+    <property name="text">
+     <string>Y</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -836,15 +901,15 @@
      <brush brushstyle="SolidPattern">
       <color alpha="255">
        <red>252</red>
-       <green>175</green>
-       <blue>62</blue>
+       <green>233</green>
+       <blue>79</blue>
       </color>
      </brush>
     </property>
    </item>
-   <item row="2" column="4">
+   <item row="2" column="5">
     <property name="text">
-     <string>L</string>
+     <string>R</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -859,9 +924,9 @@
      </brush>
     </property>
    </item>
-   <item row="2" column="5">
+   <item row="2" column="6">
     <property name="text">
-     <string>L</string>
+     <string>R</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -890,7 +955,7 @@
   <widget class="QTableWidget" name="RemainingVaccineSupply">
    <property name="geometry">
     <rect>
-     <x>640</x>
+     <x>710</x>
      <y>60</y>
      <width>211</width>
      <height>131</height>
@@ -935,7 +1000,7 @@
    </column>
    <item row="0" column="0">
     <property name="text">
-     <string>S</string>
+     <string>G</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -961,7 +1026,7 @@
    </item>
    <item row="0" column="1">
     <property name="text">
-     <string>5</string>
+     <string>6</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -969,7 +1034,7 @@
    </item>
    <item row="1" column="0">
     <property name="text">
-     <string>M</string>
+     <string>Y</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -978,15 +1043,15 @@
      <brush brushstyle="SolidPattern">
       <color alpha="255">
        <red>252</red>
-       <green>175</green>
-       <blue>62</blue>
+       <green>233</green>
+       <blue>79</blue>
       </color>
      </brush>
     </property>
    </item>
    <item row="1" column="1">
     <property name="text">
-     <string>5</string>
+     <string>6</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -994,7 +1059,7 @@
    </item>
    <item row="2" column="0">
     <property name="text">
-     <string>L</string>
+     <string>R</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>
@@ -1011,7 +1076,7 @@
    </item>
    <item row="2" column="1">
     <property name="text">
-     <string>5</string>
+     <string>6</string>
     </property>
     <property name="textAlignment">
      <set>AlignCenter</set>

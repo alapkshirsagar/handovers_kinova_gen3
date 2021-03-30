@@ -15,8 +15,6 @@ import matplotlib.pyplot as plt
 import time
 # import cvxpy
 from scipy.linalg import toeplitz
-from sound_play.msg import SoundRequest
-from sound_play.libsoundplay import SoundClient
 from std_msgs.msg import Header
 from geometry_msgs.msg import WrenchStamped, Point, Quaternion, PoseStamped
 import cvxpy
@@ -89,27 +87,29 @@ class KinovaHandoverController:
             # Set the reference frame to "Mixed"
             print(pickup_location)
             success &= self.kinova_controller.set_cartesian_reference_frame_client()
-            hover_location = [pickup_location[0], pickup_location[1], pickup_location[2] + 0.15]
+            hover_location = [pickup_location[0], pickup_location[1], pickup_location[2] + 0.1]
+            hover_location_after_pickup = [pickup_location[0], pickup_location[1], pickup_location[2] + 0.15]
 
             # ## Open gripper
             self.kinova_controller.send_gripper_command_client(self.config.gripper_open)
+            rospy.sleep(0.5)
 
             ## Hover over pickup location
             self.kinova_controller.action_arm_pose(hover_location, self.config.object_orientation)
 
-            rospy.sleep(1.0)
+            rospy.sleep(2.0)
 
             # ## Go down
             self.kinova_controller.action_arm_pose(pickup_location, self.config.object_orientation)
-            rospy.sleep(1.0)
-
+            rospy.sleep(2.0)
 
             # ## Close gripper
             self.kinova_controller.send_gripper_command_client(self.config.gripper_close)
+            rospy.sleep(0.5)
 
             # ## Go up
-            self.kinova_controller.action_arm_pose(hover_location, self.config.object_orientation)
-            rospy.sleep(1.0)
+            self.kinova_controller.action_arm_pose(hover_location_after_pickup, self.config.object_orientation)
+            rospy.sleep(1)
 
 
 
@@ -122,9 +122,6 @@ class PIDVelocityController(object):
         self.velocity_publisher = rospy.Publisher(self.config.arm_velocity_pub_topic, TwistCommand, queue_size=10)
         self.timer_start_request = rospy.Publisher('/timer_start_request', String, queue_size=10)
         self.tf_listener = tf.TransformListener()
-        self.soundHandle = SoundClient()
-        rospy.sleep(1.0)
-        self.soundHandle.stopAll()
 
 
     def robot_move_proportional(self, goal, pid_kp):
@@ -138,14 +135,16 @@ class PIDVelocityController(object):
                 (trans_human, rot_human) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_human_hand, rospy.Time(0))
                 # print("Human position =", trans_human)
                 # print("Robot position =", trans_robot)
-                self.check_human_safety_zone(trans_human)
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 print 'Could not find transform'
                 continue
 
             if goal == 'human_hand':
                 target = np.array((trans_human)) + self.config.offset_gripper_object #difference = math.sqrt((trans_object[0]-trans_robot[0])**2+(trans_object[1]-trans_robot[1])**2+(trans_object[2]-trans_robot[2])**2)
+                target_adjusted = target
                 kp = pid_kp
+                if trans_human[2] < self.config.height_threshold:
+                    target_adjusted[2] = self.config.height_threshold + self.config.offset_gripper_object[2]
                 threshold = self.config.pid_distance_threshold
             else:
                 target = goal
@@ -154,16 +153,17 @@ class PIDVelocityController(object):
 
             #print(target)
             difference = math.sqrt((target[0]-trans_robot[0])**2+(target[1]-trans_robot[1])**2+(target[2]-trans_robot[2])**2)
+            difference_adjusted = math.sqrt((target_adjusted[0]-trans_robot[0])**2+(target_adjusted[1]-trans_robot[1])**2+(target_adjusted[2]-trans_robot[2])**2)
             #print difference
-            velocity = min(kp*difference, self.config.max_velocity)
+            velocity = min(kp*difference_adjusted, self.config.max_velocity)
             # print(velocity)
             if difference < threshold:
                 velocity = 0.0
                 reached = True
 
-            velocity_x = velocity*(target[0]-trans_robot[0])/difference
-            velocity_y = velocity*(target[1]-trans_robot[1])/difference
-            velocity_z = velocity*(target[2]-trans_robot[2])/difference
+            velocity_x = velocity*(target[0]-trans_robot[0])/difference_adjusted
+            velocity_y = velocity*(target[1]-trans_robot[1])/difference_adjusted
+            velocity_z = velocity*(target[2]-trans_robot[2])/difference_adjusted
             #print(velocity_x, velocity_y, velocity_z)
 
             velocity_message = TwistCommand()
@@ -195,13 +195,13 @@ class PIDVelocityController(object):
         while (not self.check_human_handover_zone()):
             rospy.sleep(0.02)
         print('Human entered handover zone, moving towards human hand')
-        self.timer_start_request.publish(rospy.get_param('timing_constraints'))
+        self.timer_start_request.publish(rospy.get_param('timing_constraints')+',pid')
         self.robot_move_proportional('human_hand', pid_kp)
+        self.timer_start_request.publish('stop, pid')
 
         # Open gripper
         print('Hand close to gripper, opening gripper')
         self.kinova_controller.send_gripper_command_client(self.config.gripper_open)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
-        self.timer_start_request.publish('stop')
 
         # Go to home position
         print('Object grasped, moving to hover position')
@@ -209,7 +209,7 @@ class PIDVelocityController(object):
 
         # Open gripper
         # print('Reached home position, opening gripper in 2 seconds')
-        # rospy.sleep(2.0)
+        # rospy.sleep(2.0)perform_hand
         # self.gripper_controller.gripper_move(self.config.gripper_open)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
         # print('Opened gripper')
 
@@ -219,8 +219,6 @@ class PIDVelocityController(object):
             # (trans_object, rot_object) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_object, rospy.Time(0))
             (trans_human, rot_human) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_human_hand, rospy.Time(0))
             print(trans_human)
-            self.check_human_safety_zone(trans_human)
-
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             print 'Could not find transform'
 
@@ -235,12 +233,6 @@ class PIDVelocityController(object):
         else:
             return False
 
-    def check_human_safety_zone(self, trans_human):
-        # print("here")
-        if trans_human[0] > self.config.safety_zone_boundaries[0] and trans_human[0] < self.config.safety_zone_boundaries[1] and trans_human[1] > self.config.safety_zone_boundaries[2] and trans_human[1] < self.config.safety_zone_boundaries[3]:
-            self.soundHandle.play(SoundRequest.NEEDS_PLUGGING)
-            rospy.sleep(0.02)
-
 
 class DMPVelocityController(object):
     def __init__(self, config=None, kinova_controller= None, **kwargs):
@@ -252,9 +244,6 @@ class DMPVelocityController(object):
         self.clf_x = SVR(C=10.0, epsilon=0.1)
         self.clf_y = SVR(C=10.0, epsilon=0.1)
         self.clf_z = SVR(C=10.0, epsilon=0.1)
-        self.soundHandle = SoundClient()
-        rospy.sleep(1.0)
-        self.soundHandle.stopAll()
 
         if self.config.dmp_record_trajectory:
             self.trajectory_file = open("human_trajectory.txt", "w")
@@ -391,7 +380,6 @@ class DMPVelocityController(object):
                     state0 = trans_robot
                 time = time + 1.0/self.config.dmp_loop_rate
                 # print("Time", time)
-                self.check_human_safety_zone(trans_human)
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 print 'Could not find transform'
                 continue
@@ -486,7 +474,6 @@ class DMPVelocityController(object):
             # (trans_object, rot_object) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_object, rospy.Time(0))
             (trans_human, rot_human) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_human_hand, rospy.Time(0))
             #print(trans_object)
-            self.check_human_safety_zone(trans_human)
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             print 'Could not find transform'
 
@@ -502,12 +489,6 @@ class DMPVelocityController(object):
             return False
 
 
-    def check_human_safety_zone(self, trans_human):
-        # print("here")
-        if trans_human[0] > self.config.safety_zone_boundaries[0] and trans_human[0] < self.config.safety_zone_boundaries[1] and trans_human[1] > self.config.safety_zone_boundaries[2] and trans_human[1] < self.config.safety_zone_boundaries[3]:
-            self.soundHandle.play(SoundRequest.NEEDS_PLUGGING)
-            rospy.sleep(0.02)
-
 class MPCVelocityController(object):
     def __init__(self, config=None, kinova_controller=None, **kwargs):
         super(MPCVelocityController, self).__init__(**kwargs)
@@ -521,7 +502,7 @@ class MPCVelocityController(object):
         self.nx = 3   # number of state
         self.nu = 3   # number of input
         self.delta_t = 0.25  # time tick
-        self.L = 32 # Horizon length
+        self.L = 24 # Horizon length
         self.t_reach = self.config.stl_reach_time/self.delta_t*1.0
         self.T = 2*self.L + 1 # Receeding window
         self.u_max = self.config.max_velocity # Maximum velocity
@@ -529,14 +510,22 @@ class MPCVelocityController(object):
         x_target = np.array([0.2, 0.5, 0.5]) # Target position
         self.epsilon = self.config.pid_distance_threshold # Maximum error in target position
         self.animation = True
-        self.soundHandle = SoundClient()
-        rospy.sleep(1.0)
-        self.soundHandle.stopAll()
 
     def mpc_failure_recovery(self):
+        self.timer_start_request.publish('abort, mpc')
+        looprate = rospy.Rate(10)
+        time_now = rospy.Time.now()
+        while rospy.Time.now() - time_now < rospy.Duration(5.0):
+            velocity_message = TwistCommand()
+            velocity_message.twist.linear_x = 0.0
+            velocity_message.twist.linear_y = 0.0
+            velocity_message.twist.linear_z = 0.0
+            self.velocity_publisher.publish(velocity_message)
+            looprate.sleep()
+
         # Send robot to home position
         self.kinova_controller.action_arm_pose(self.config.hover_location, self.config.object_orientation)
-        self.timer_start_request.publish('abort')
+        rospy.sleep(2.0)
 
 
     def robot_move_mpc(self, goal, reach_time):
@@ -552,7 +541,6 @@ class MPCVelocityController(object):
                 # print("Human position =", trans_human)
                 # print("Robot position =", trans_robot)
                 tracking_available = True
-                self.check_human_safety_zone(trans_human)
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 print 'Could not find transform'
                 continue
@@ -569,8 +557,6 @@ class MPCVelocityController(object):
                 (trans_human, rot_human) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_human_hand, rospy.Time(0))
                 # print("Human position =", trans_human)
                 # print("Robot position =", trans_robot)
-                self.check_human_safety_zone(trans_human)
-
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 print 'Could not find transform'
                 continue
@@ -581,8 +567,12 @@ class MPCVelocityController(object):
 
             if goal == 'human_hand':
                 target = np.array((trans_human)) + self.config.offset_gripper_object #difference = math.sqrt((trans_object[0]-trans_robot[0])**2+(trans_object[1]-trans_robot[1])**2+(trans_object[2]-trans_robot[2])**2)
+                target_adjusted = target
                 t_reach = reach_time
+                if trans_human[2] < self.config.height_threshold:
+                    target_adjusted[2] = self.config.height_threshold + self.config.offset_gripper_object[2]
                 threshold = self.config.pid_distance_threshold
+                target = np.array((trans_human)) + self.config.offset_gripper_object #difference = math.sqrt((trans_object[0]-trans_robot[0])**2+(trans_object[1]-trans_robot[1])**2+(trans_object[2]-trans_robot[2])**2)
             else:
                 target = goal
                 t_reach = reach_time
@@ -591,11 +581,17 @@ class MPCVelocityController(object):
             print("Running MPC with reach time", t_reach)
             difference = math.sqrt((target[0]-trans_robot[0])**2+(target[1]-trans_robot[1])**2+(target[2]-trans_robot[2])**2)
             #print difference
-            status, ox, oy, oz, oux, ouy, ouz = self.mpc_control(x_old, u_old, target, i)
+            status, ox, oy, oz, oux, ouy, ouz = self.mpc_control(x_old, u_old, target_adjusted, i)
             
-            if status is not cvxpy.OPTIMAL:
+            if status is not cvxpy.OPTIMAL and i != int(t_reach/self.delta_t)-1:
                 self.mpc_failure_recovery()
                 reached = True
+                return False
+            if i>int(t_reach/self.delta_t):
+                self.mpc_failure_recovery()
+                reached = True
+                print(i)
+                return False
 
             if difference < threshold:
                 velocity_x = 0.0
@@ -621,6 +617,7 @@ class MPCVelocityController(object):
             u_old[2,-1] = velocity_z
             i = i+1
             rate.sleep()
+        return True
 
     def mpc_control(self, x_old, u_old, x_target, i):
 
@@ -756,13 +753,15 @@ class MPCVelocityController(object):
         while (not self.check_human_handover_zone()):
             rospy.sleep(0.02)
         print('Human entered handover zone, moving towards human hand')
-        self.timer_start_request.publish(rospy.get_param('timing_constraints'))
-        self.robot_move_mpc('human_hand', reach_time)
+        self.timer_start_request.publish(rospy.get_param('timing_constraints')+',mpc')
+        success = self.robot_move_mpc('human_hand', reach_time)
+        if success:
+            self.timer_start_request.publish('stop, mpc')
 
         # Open gripper
         print('Hand close to gripper, opening gripper')
-        self.kinova_controller.send_gripper_command_client(self.config.gripper_open)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
-        self.timer_start_request.publish('stop')
+        if success:
+            self.kinova_controller.send_gripper_command_client(self.config.gripper_open)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
 
         # Go to home position
         print('Object grasped, moving to hover position')
@@ -773,8 +772,6 @@ class MPCVelocityController(object):
             (trans_robot, rot_robot) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_gripper, rospy.Time(0))
             # (trans_object, rot_object) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_object, rospy.Time(0))
             (trans_human, rot_human) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_human_hand, rospy.Time(0))
-            self.check_human_safety_zone(trans_human)
-
             #print(trans_human)
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             print 'Could not find transform'
@@ -790,11 +787,6 @@ class MPCVelocityController(object):
         else:
             return False
 
-    def check_human_safety_zone(self, trans_human):
-        # print("here")
-        if trans_human[0] > self.config.safety_zone_boundaries[0] and trans_human[0] < self.config.safety_zone_boundaries[1] and trans_human[1] > self.config.safety_zone_boundaries[2] and trans_human[1] < self.config.safety_zone_boundaries[3]:
-            self.soundHandle.play(SoundRequest.NEEDS_PLUGGING)
-            rospy.sleep(0.02)
 
     def robot_move_proportional(self, goal):
         reached = False
@@ -807,7 +799,6 @@ class MPCVelocityController(object):
                 (trans_human, rot_human) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_human_hand, rospy.Time(0))
                 # print("Human position =", trans_human)
                 # print("Robot position =", trans_robot)
-                self.check_human_safety_zone(trans_human)
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 print 'Could not find transform'
                 continue

@@ -9,10 +9,11 @@ from python_qt_binding.QtWidgets import QDialog, QWidget
 from std_msgs.msg import String
 from PyQt5.QtCore import QTimer, Signal, Qt
 from PyQt5.QtWidgets import QTableWidgetItem
+import numpy as np
 
 ss = 0
 ms = 0
-
+handover_status = False
 class ExperimentUI(Plugin):
     start_test_signal = Signal(bool)
     def __init__(self, context):
@@ -55,13 +56,13 @@ class ExperimentUI(Plugin):
         self.timer_ui = TimerUI()
 
         self.timer_ui._widget.show()
-        if unknowns[0] not in ["trial", "test"]:
-            print("Incorrect mode type. Change the mode to either trial or test")
+        if unknowns[0] not in ["design", "test"]:
+            print("Incorrect mode type. Change the mode to either design or test")
             raise rospy.ROSInterruptException("Incorrect task mode")
         if unknowns[1] not in ["mpc", "pid"]:
             print("Incorrect controller type. Change the controller type to either pid or mpc")
             raise rospy.ROSInterruptException("Incorrect controller type")
-        if unknowns[0] == 'trial':
+        if unknowns[0] == 'design':
             if unknowns[1] == 'mpc':
                 self.stl_design_ui._widget.show()
             elif unknowns[1] == 'pid':
@@ -109,6 +110,7 @@ class ExperimentUI(Plugin):
 class TimerUI(Plugin):
     timer_start_signal = Signal(bool)
     stl_abort_signal = Signal(bool)
+    duration_display_signal = Signal(str)
 
     def __init__(self):
         QDialog.__init__(self)
@@ -127,7 +129,7 @@ class TimerUI(Plugin):
         # tell from pane to pane.
         self._widget.setWindowTitle(self._widget.windowTitle())
 
-
+        self.task_controller = 'pid'
         #Timer
         self.timing_constraints = [2, 4]
         self.timer_start_signal.connect(self.start_timer)
@@ -140,8 +142,17 @@ class TimerUI(Plugin):
         #STL failure feedback
         self.stl_abort_signal.connect(self.stl_feedback)
 
+        #Duration display
+        self.duration_display_signal.connect(self.duration_table_update)
+        self.duration_table = np.zeros((4,2))
+
+        #Data logger publisher
+        self.data_logger_publisher = rospy.Publisher('data_logger_signal', String, queue_size = 10)
+
         # Subscribers
         self.timer_start_request = rospy.Subscriber("/timer_start_request", String, self.start_timer_subscriber_callback)
+        self.duration_display_subscriber = rospy.Subscriber("/duration_display", String, self.duration_display_callback)
+        
 
         self.red_stylesheet = \
             "QWidget {\n" \
@@ -156,41 +167,63 @@ class TimerUI(Plugin):
         self._widget.lcdNumber.setStyleSheet(self.red_stylesheet)
 
     def start_timer_subscriber_callback(self, message):
-        if message.data == 'stop':
+        message_list = message.data.split(',')
+        self.task_controller = message_list[-1]
+        if message_list[0] == 'stop':
             self.timer_start_signal.emit(False)
-        elif message.data == 'abort':
+        elif message_list[0] == 'abort':
             self.stl_abort_signal.emit(True)
         else:
-            self.timing_constraints = message.data.split(',')
+            self.timing_constraints = message_list[0:-1]
             self.stl_abort_signal.emit(False)
             self.timer_start_signal.emit(True)
 
+    def duration_display_callback(self, message):
+        print(message.data)
+        self.duration_display_signal.emit(message.data)
+
+    def duration_table_update(self, event):
+        print(event)
+        event_list = event.split(',')
+        self.duration_table[int(event_list[0]), int(event_list[1])]+= float(event_list[2])
+        item = QTableWidgetItem(str(self.duration_table[int(event_list[0]), int(event_list[1])]))
+        item.setTextAlignment(Qt.AlignCenter)
+        self._widget.durationTable.setItem(int(event_list[0]), int(event_list[1]), item)
 
     def start_timer(self, event):
-        global ss,ms
+        global ss,ms, handover_status
         if event:
             self.Time()
             self.timer.start(100)
+            self.data_logger_publisher.publish('handover_start'+','+self.task_controller)
         else:
             self.timer.stop()
+            if handover_status:
+                self.data_logger_publisher.publish('handover_success'+','+self.task_controller)
+            else:
+                self.data_logger_publisher.publish('handover_fail'+','+self.task_controller)
             ss = 0
             ms = 0
 
         
     def Time(self):
-        global ss, ms
+        global ss, ms, handover_status
         if ms < 9:
             ms += 1
         else:
             ms =  0
             ss += 1
         time = "{0:02d}:{1:01d}".format(ss, ms)
+        print(self.timing_constraints)
         if ss*10+ms > float(self.timing_constraints[1]):
             self._widget.lcdNumber.setStyleSheet(self.red_stylesheet)
-        elif ss*10+ms > float(self.timing_constraints[0]):
+            handover_status = False
+        elif ss*10+ms >= float(self.timing_constraints[0]):
             self._widget.lcdNumber.setStyleSheet(self.green_stylesheet)
+            handover_status = True
         elif ss*10+ms < float(self.timing_constraints[0]):
             self._widget.lcdNumber.setStyleSheet(self.red_stylesheet)
+            handover_status = False
 
     
         self._widget.lcdNumber.setDigitCount(len(time))
@@ -198,12 +231,14 @@ class TimerUI(Plugin):
 
 
     def stl_feedback(self, event):
+        global handover_status
         if event:
             stylesheet = \
                 "QWidget {\n" \
                 + "color: rgb(255,0,0);\n" \
                 + "}"
             self._widget.label_2.setStyleSheet(stylesheet)
+            handover_status = False
             self.timer_start_signal.emit(False)
         else:
             stylesheet = \

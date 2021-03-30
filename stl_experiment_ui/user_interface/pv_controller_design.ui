@@ -437,6 +437,11 @@
      <height>680</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>13</pointsize>
+    </font>
+   </property>
    <widget class="QTableWidget" name="tableWidget">
     <property name="geometry">
      <rect>
@@ -481,7 +486,7 @@
     </column>
     <item row="0" column="0">
      <property name="text">
-      <string>S</string>
+      <string>G</string>
      </property>
      <property name="textAlignment">
       <set>AlignCenter</set>
@@ -523,7 +528,7 @@
     </item>
     <item row="1" column="0">
      <property name="text">
-      <string>M</string>
+      <string>Y</string>
      </property>
      <property name="textAlignment">
       <set>AlignCenter</set>
@@ -532,8 +537,8 @@
       <brush brushstyle="SolidPattern">
        <color alpha="255">
         <red>252</red>
-        <green>175</green>
-        <blue>62</blue>
+        <green>233</green>
+        <blue>79</blue>
        </color>
       </brush>
      </property>
@@ -556,7 +561,7 @@
     </item>
     <item row="2" column="0">
      <property name="text">
-      <string>L</string>
+      <string>R</string>
      </property>
      <property name="textAlignment">
       <set>AlignCenter</set>
@@ -1090,8 +1095,7 @@
      <number>0</number>
     </property>
     <property name="text">
-     <string>Robot's instantaneous speed = K * (distance from human hand) 
- Choose K</string>
+     <string>Robot's Speed Multiplier</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1106,8 +1110,14 @@
       <height>21</height>
      </rect>
     </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(138, 226, 52);</string>
+    </property>
     <property name="text">
-     <string>Vaccine S:</string>
+     <string>Vaccine G:</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1122,8 +1132,14 @@
       <height>21</height>
      </rect>
     </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(252, 233, 79);</string>
+    </property>
     <property name="text">
-     <string>Vaccine M:</string>
+     <string>Vaccine Y:</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1138,8 +1154,14 @@
       <height>21</height>
      </rect>
     </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(239, 41, 41);</string>
+    </property>
     <property name="text">
-     <string>Vaccine L:</string>
+     <string>Vaccine R:</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1223,27 +1245,6 @@
      <string>1</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_11">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>530</y>
-      <width>791</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>13</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Maximum linear speed of the robot is 20cm/s</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_12">
     <property name="geometry">
      <rect>
@@ -1254,7 +1255,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>0.1</string>
+     <string>0.10</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1270,7 +1271,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>0.1</string>
+     <string>0.10</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1286,7 +1287,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>0.1</string>
+     <string>0.10</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -1303,6 +1304,45 @@
     </property>
     <property name="text">
      <string>Generate Controller</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_15">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>330</y>
+      <width>281</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>x  (distance from human hand)  m/s</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_16">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>410</y>
+      <width>281</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>x  (distance from human hand) m/s</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_17">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>490</y>
+      <width>271</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>x  (distance from human hand) m/s</string>
     </property>
    </widget>
   </widget>

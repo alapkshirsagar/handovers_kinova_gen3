@@ -1,0 +1,17 @@
+<launch>
+
+  <!-- Start soundplay node. -->
+  <node pkg="sound_play"
+        type="soundplay_node.py"
+        name="soundplay_node"
+        required="true">
+  </node>
+
+  <!-- Start human_safety_zone node. -->
+  <node pkg="handover_test"
+        type="human_safety_zone.py"
+        name="human_safety_zone"
+        required="true">
+  </node>
+  
+</launch>

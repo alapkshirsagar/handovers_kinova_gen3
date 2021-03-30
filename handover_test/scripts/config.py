@@ -15,9 +15,9 @@ class HandoverConfig(object):
 
 ## Gripper controller parameters
 
-    gripper_open = 0.45  # fraction between [0,1]
+    gripper_open = 0.55  # fraction between [0,1]
 
-    gripper_close = 0.65  #  fraction between [0,1]
+    gripper_close = 0.8  #  fraction between [0,1]
 
     finger_max_turn = 6800     # max thread rotation for one finger
 
@@ -30,13 +30,15 @@ class HandoverConfig(object):
 
     handover_zone_boundaries = [-0.5, 1.5, -1.5 , 1.5] # [x_min, x_max, y_min, y_max]
 
-    safety_zone_boundaries = [0.0, 0.0, 0.0, 0.0] # [x_min, x_max, y_min, y_max]
+    safety_zone_boundaries = [0.1, 0.5, 0.12, 1.1] # [x_min, x_max, y_min, y_max]
 
     retreat_kp = 1.0
 
     retreat_threshold = 0.05
 
     max_velocity = 0.5
+
+    height_threshold = 0.2
 
     arm_velocity_pub_topic = '/my_gen3/in/cartesian_velocity'
 
@@ -60,15 +62,15 @@ class HandoverConfig(object):
 
 
     # pid_velocity_threshold = 0.05 #0.015
-    pid_distance_threshold = 0.15 #0.015
+    pid_distance_threshold = 0.10 #0.015
 
 
     # Handover location for offline handover (in robot frame)
     fixed_handover_location = [0.6, 0, 0.4]
 
     # Robot home location (in robot frame)
-    object_location = [0.27,-0.132,0.106]
-    hover_location = [0.27,-0.132,0.106+0.15]
+    object_location = [0.388,-0.045,0.165]
+    hover_location = [0.388,-0.045,0.165+0.1]
     object_orientation = [180,0,90]
 
     # Robot home location (in OptiTrack frame)
@@ -144,7 +146,7 @@ class HandoverConfig(object):
 
     handover_object_gripper_distance_max = 0.15
 
-    online_pid_pos_offset = .15
+    online_pid_pos_offset = .2
 
     handover_done_hand_gripper_distance = 0.25
 

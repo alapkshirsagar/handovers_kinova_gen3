@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>312</width>
-    <height>236</height>
+    <width>731</width>
+    <height>235</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -940,7 +940,7 @@ color: rgb(255, 255, 255);</string>
     <rect>
      <x>46</x>
      <y>30</y>
-     <width>241</width>
+     <width>641</width>
      <height>20</height>
     </rect>
    </property>
@@ -953,11 +953,59 @@ color: rgb(255, 255, 255);</string>
     <string notr="true">color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
-    <string>Reach time too low</string>
+    <string>Could not reach in specified time</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
    </property>
+  </widget>
+  <widget class="QTableWidget" name="durationTable">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>60</y>
+     <width>351</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>15</pointsize>
+    </font>
+   </property>
+   <attribute name="horizontalHeaderDefaultSectionSize">
+    <number>130</number>
+   </attribute>
+   <row>
+    <property name="text">
+     <string>Design 1</string>
+    </property>
+   </row>
+   <row>
+    <property name="text">
+     <string>Test 1</string>
+    </property>
+   </row>
+   <row>
+    <property name="text">
+     <string>Design 2</string>
+    </property>
+   </row>
+   <row>
+    <property name="text">
+     <string>Test 2</string>
+    </property>
+   </row>
+   <column>
+    <property name="text">
+     <string>Controller 1</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>Controller 2</string>
+    </property>
+   </column>
   </widget>
  </widget>
  <resources/>

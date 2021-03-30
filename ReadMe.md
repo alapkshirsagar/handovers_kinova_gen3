@@ -23,18 +23,32 @@ roslaunch mocap_optitrack mocap.launch
 
 ```
 
-Terminal-3 (User Interface)
+Terminal-3 (Data logger)
 ```
 export ROS_IP=192.168.0.103
 source devel/setup.bash
-rqt --standalone stl_experiment_ui --args trial mpc
+rosrun handover_test data_logger.py participant_number
 ```
 
-Terminal-3 (Main Controller)
+Terminal-4 (User Interface)
 ```
 export ROS_IP=192.168.0.103
 source devel/setup.bash
-rosrun handover_test task_planner.py trial mpc
+rqt --standalone stl_experiment_ui --args design mpc
+```
+
+Terminal-5 (SoundPlay)
+```
+export ROS_IP=192.168.0.103
+source devel/setup.bash
+roslaunch handover_test human_safety_check.launch
+```
+
+Terminal-6 (Main Controller)
+```
+export ROS_IP=192.168.0.103
+source devel/setup.bash
+rosrun handover_test task_planner.py design mpc
 ```
 
 MATLAB PC:
