@@ -1,10 +1,3 @@
-pilot7,pid,design_start,3.798
-pilot7,pid,design_end,20.648
-pilot7,pid,design_duration,16.85
-pilot7,pid,design_no_handovers,0
-pilot7,pid,design_robot_idle,16.9
-pilot7,pid,design_human_idle,3.8
-pilot7,pid,design_start,34.679
 pilot7,mpc,design_start,53.514
 pilot7,mpc,handover_start,92.646
 pilot7, mpc,handover_fail,92.852
@@ -244,16 +237,6 @@ pilot7,pid,design_duration,294.39
 pilot7,pid,design_no_handovers,0
 pilot7,pid,design_robot_idle,217.0
 pilot7,pid,design_human_idle,159.7
-pilot7,pid,design_end,0.035
-pilot7,pid,design_duration,0.04
-pilot7,pid,design_no_handovers,0
-pilot7,pid,design_robot_idle,0.0
-pilot7,pid,design_human_idle,0.0
-pilot7,pid,design_end,0.036
-pilot7,pid,design_duration,0.04
-pilot7,pid,design_no_handovers,0
-pilot7,pid,design_robot_idle,0.0
-pilot7,pid,design_human_idle,0.0
 pilot7,pid,test_start,37.075
 pilot7,pid,handover_start,45.423
 pilot7, pid,handover_success,46.623
