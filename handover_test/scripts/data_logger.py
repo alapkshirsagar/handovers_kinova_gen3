@@ -12,6 +12,16 @@ class DataLogger():
         self.config = HandoverConfig()
         self.data_logger_subscriber = rospy.Subscriber('data_logger_signal', String, self.data_logger_callback)
         self.duration_table_publisher = rospy.Publisher('/duration_display', String, queue_size = 10)
+        if not rospy.has_param('duration_table'):
+            self.duration_table = [0,0,0,0,0,0,0,0]
+            rospy.set_param('duration_table', self.duration_table)
+        else:
+            self.duration_table = rospy.get_param('duration_table')
+        
+        if not rospy.has_param('safety_zone_penalty'):
+            self.safety_zone_penalty_start = 0.0
+        else:
+            self.safety_zone_penalty_start = rospy.get_param('safety_zone_penalty')
         rospy.set_param('phase_number', 1)
         self.design_start_time = rospy.Time.now()
         self.design_end_time = rospy.Time.now()
@@ -31,10 +41,11 @@ class DataLogger():
 
     def data_logger_callback(self,signal):
         signal_list = signal.data.split(',')
-        print(signal_list)
+        # print(signal_list)
         self.controller_type = signal_list[1]
         timestamp = round((rospy.Time.now()-self.initialTime).to_nsec()/(1.0*10**9),3)
         self.data_logging_file.write(str(self.participant_id)+','+str(self.controller_type)+',' + signal_list[0]+ ',' + str(timestamp)+'\n')
+        print(str(self.participant_id)+','+str(self.controller_type)+',' + signal_list[0]+ ',' + str(timestamp))
         if signal_list[0] in ['design_start', 'design_end', 'test_start', 'test_end']:
             self.duration_callback(signal)
 
@@ -52,16 +63,26 @@ class DataLogger():
             self.design_end_time = rospy.Time.now()
             self.design_duration = self.design_end_time - self.design_start_time
             self.data_logging_file.write(str(self.participant_id)+','+str(self.controller_type)+',' + 'design_duration'+ ',' + str(round(self.design_duration.to_sec(),2))+'\n')
+            print(str(self.participant_id)+','+str(self.controller_type)+',' + 'design_duration'+ ',' + str(round(self.design_duration.to_sec(),2)))
             self.data_logging_file.write(str(self.participant_id)+','+str(self.controller_type)+',' + 'design_no_handovers'+ ',' + str(self.number_of_handovers_design)+'\n')
+            print(str(self.participant_id)+','+str(self.controller_type)+',' + 'design_no_handovers'+ ',' + str(self.number_of_handovers_design))
             self.number_of_handovers_design = 0
             self.data_logging_file.write(str(self.participant_id)+','+str(self.controller_type)+',' + 'design_robot_idle'+ ',' + str(self.robot_idle_time)+'\n')
+            print(str(self.participant_id)+','+str(self.controller_type)+',' + 'design_robot_idle'+ ',' + str(self.robot_idle_time))
             self.robot_idle_time = 0.0
             self.data_logging_file.write(str(self.participant_id)+','+str(self.controller_type)+',' + 'design_human_idle'+ ',' + str(self.human_idle_time)+'\n')
+            print(str(self.participant_id)+','+str(self.controller_type)+',' + 'design_human_idle'+ ',' + str(self.human_idle_time))
             self.human_idle_time = 0.0
+            self.data_logging_file.write(str(self.participant_id)+','+str(self.controller_type)+',' + 'train_safety_zone_duration'+ ',' + str(rospy.get_param('safety_zone_penalty')-self.safety_zone_penalty_start)+'\n')
+            print(str(self.participant_id)+','+str(self.controller_type)+',' + 'train_safety_zone_duration'+ ',' + str(rospy.get_param('safety_zone_penalty')-self.safety_zone_penalty_start))
+            self.safety_zone_penalty_start = rospy.get_param('safety_zone_penalty')
 
             phase_number = rospy.get_param('phase_number')
             [row,column] = self.get_duration_table_index(phase_number)
-            self.duration_table_publisher.publish(str(row)+','+str(column)+','+str(round(self.design_duration.to_sec(),2)))
+            self.duration_table[row+4*column] += round(self.design_duration.to_sec(),2)
+            rospy.set_param('duration_table', self.duration_table)
+            rospy.sleep(0.2)
+            self.duration_table_publisher.publish('update')
             rospy.set_param('phase_number', phase_number+1)
 
             self.design_duration = rospy.Duration.from_sec(0.0)
@@ -86,14 +107,23 @@ class DataLogger():
             self.test_end_time = rospy.Time.now()
             self.test_duration = self.test_end_time - self.test_start_time
             self.data_logging_file.write(str(self.participant_id)+','+str(self.controller_type)+',' + 'test_duration'+ ',' + str(round(self.test_duration.to_sec(),2))+'\n')
+            print(str(self.participant_id)+','+str(self.controller_type)+',' + 'test_duration'+ ',' + str(round(self.test_duration.to_sec(),2)))
             self.data_logging_file.write(str(self.participant_id)+','+str(self.controller_type)+',' + 'test_robot_idle'+ ',' + str(self.robot_idle_time)+'\n')
+            print(str(self.participant_id)+','+str(self.controller_type)+',' + 'test_robot_idle'+ ',' + str(self.robot_idle_time))
             self.robot_idle_time = 0.0
             self.data_logging_file.write(str(self.participant_id)+','+str(self.controller_type)+',' + 'test_human_idle'+ ',' + str(self.human_idle_time)+'\n')
+            print(str(self.participant_id)+','+str(self.controller_type)+',' + 'test_human_idle'+ ',' + str(self.human_idle_time))
             self.human_idle_time = 0.0
+            self.data_logging_file.write(str(self.participant_id)+','+str(self.controller_type)+',' + 'test_safety_zone_duration'+ ',' + str(rospy.get_param('safety_zone_penalty')-self.safety_zone_penalty_start)+'\n')
+            print(str(self.participant_id)+','+str(self.controller_type)+',' + 'test_safety_zone_duration'+ ',' + str(rospy.get_param('safety_zone_penalty')-self.safety_zone_penalty_start))
+            self.safety_zone_penalty_start = rospy.get_param('safety_zone_penalty')
 
             phase_number = rospy.get_param('phase_number')
             [row,column] = self.get_duration_table_index(phase_number)
-            self.duration_table_publisher.publish(str(row)+','+str(column)+','+str(round(self.test_duration.to_sec(),2)))
+            self.duration_table[row+4*column] += round(self.test_duration.to_sec(),2)
+            rospy.set_param('duration_table', self.duration_table)
+            rospy.sleep(0.2)
+            self.duration_table_publisher.publish('update')
             rospy.set_param('phase_number', phase_number+1)
 
             self.test_duration = rospy.Duration.from_sec(0.0)
@@ -103,8 +133,12 @@ class DataLogger():
             self.number_of_handovers_design+=1
 
     def get_duration_table_index(self, phase_number):
-        column = (phase_number-1)//4
-        row = (phase_number-1)%4
+        if phase_number < 4:
+            column = (phase_number-1)//2
+            row = (phase_number-1)%2
+        else:
+            column = (phase_number-1)//4
+            row = (phase_number-1)%4
         return row, column
 
     def optitrack_callback(self):

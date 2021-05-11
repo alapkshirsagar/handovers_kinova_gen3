@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>731</width>
+    <width>314</width>
     <height>235</height>
    </rect>
   </property>
@@ -938,15 +938,15 @@ color: rgb(255, 255, 255);</string>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>46</x>
+     <x>6</x>
      <y>30</y>
-     <width>641</width>
+     <width>301</width>
      <height>20</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>15</pointsize>
+     <pointsize>13</pointsize>
     </font>
    </property>
    <property name="styleSheet">

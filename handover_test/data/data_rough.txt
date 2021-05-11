@@ -1,0 +1,25 @@
+rough,pid,design_start,10.462
+rough,pid,handover_start,22.312
+rough, pid,handover_success,24.912
+rough,pid,design_end,32.213
+rough,pid,design_duration,21.75
+rough,pid,design_no_handovers,0
+rough,pid,design_robot_idle,15.2
+rough,pid,design_human_idle,19.8
+rough,pid,design_start,117.038
+rough,pid,design_end,118.558
+rough,pid,design_duration,1.52
+rough,pid,design_no_handovers,0
+rough,pid,design_robot_idle,1.5
+rough,pid,design_human_idle,1.5
+rough,pid,design_start,28.176
+rough,pid,design_end,29.759
+rough,pid,design_duration,1.58
+rough,pid,design_no_handovers,0
+rough,pid,design_robot_idle,1.6
+rough,pid,design_human_idle,1.6
+rough,pid,test_start,94.209
+rough,pid,handover_start,105.132
+rough, pid,handover_success,107.032
+rough,pid,handover_start,120.033
+rough, pid,handover_success,122.433

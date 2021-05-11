@@ -13,11 +13,6 @@ rigid_bodies:
         pose2d: human_hand/ground_pose
         child_frame_id: human_hand
         parent_frame_id: optitrack_origin
-    '3':
-        pose: object/pose
-        pose2d: object/ground_pose
-        child_frame_id: object
-        parent_frame_id: optitrack_origin
 optitrack_config:
         multicast_address: 239.255.42.99
         command_port: 1510

@@ -30,7 +30,15 @@ class HandoverConfig(object):
 
     handover_zone_boundaries = [-0.5, 1.5, -1.5 , 1.5] # [x_min, x_max, y_min, y_max]
 
-    safety_zone_boundaries = [0.1, 0.5, 0.12, 1.1] # [x_min, x_max, y_min, y_max]
+    # safety_zone_boundaries = [0.1, 0.5, 0.12, 1.1] # [x_min, x_max, y_min, y_max] #rectuangular non allowed region - v1
+
+    safety_zone_boundaries = [0.156, 0.679, -0.12, 1.30] # [x_min, x_max, y_min, y_max] #rectangular non allowed region 
+
+    safety_zone_allowed1_boundaries= [0.105, 0.51 , -0.12, 0.155] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 1
+
+    safety_zone_allowed2_boundaries= [0.51, 0.69, 0.42, 0.82] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 2
+
+    safety_zone_allowed3_boundaries= [0.12, 0.49, 0.99, 1.34] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 3
 
     retreat_kp = 1.0
 
@@ -69,8 +77,8 @@ class HandoverConfig(object):
     fixed_handover_location = [0.6, 0, 0.4]
 
     # Robot home location (in robot frame)
-    object_location = [0.388,-0.045,0.165]
-    hover_location = [0.388,-0.045,0.165+0.1]
+    object_location = [0.409,-0.05,0.153]
+    hover_location = [0.409,-0.05,0.153+0.1]
     object_orientation = [180,0,90]
 
     # Robot home location (in OptiTrack frame)

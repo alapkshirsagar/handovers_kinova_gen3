@@ -53,13 +53,14 @@ class ExperimentUI(Plugin):
         ## Controller Design Windows
         self.stl_design_ui = STLdesignUI()
         self.pv_design_ui = PVdesignUI()
+        self.dummy_design_ui = DummyedesignUI()
         self.timer_ui = TimerUI()
 
         self.timer_ui._widget.show()
         if unknowns[0] not in ["design", "test"]:
             print("Incorrect mode type. Change the mode to either design or test")
             raise rospy.ROSInterruptException("Incorrect task mode")
-        if unknowns[1] not in ["mpc", "pid"]:
+        if unknowns[1] not in ["dummy","mpc", "pid"]:
             print("Incorrect controller type. Change the controller type to either pid or mpc")
             raise rospy.ROSInterruptException("Incorrect controller type")
         if unknowns[0] == 'design':
@@ -67,6 +68,8 @@ class ExperimentUI(Plugin):
                 self.stl_design_ui._widget.show()
             elif unknowns[1] == 'pid':
                 self.pv_design_ui._widget.show()
+            elif unknowns[1] == 'dummy':
+                self.dummy_design_ui._widget.show()
         else:
             print("Here")
             self._widget.show()
@@ -144,7 +147,6 @@ class TimerUI(Plugin):
 
         #Duration display
         self.duration_display_signal.connect(self.duration_table_update)
-        self.duration_table = np.zeros((4,2))
 
         #Data logger publisher
         self.data_logger_publisher = rospy.Publisher('data_logger_signal', String, queue_size = 10)
@@ -183,12 +185,12 @@ class TimerUI(Plugin):
         self.duration_display_signal.emit(message.data)
 
     def duration_table_update(self, event):
-        print(event)
-        event_list = event.split(',')
-        self.duration_table[int(event_list[0]), int(event_list[1])]+= float(event_list[2])
-        item = QTableWidgetItem(str(self.duration_table[int(event_list[0]), int(event_list[1])]))
-        item.setTextAlignment(Qt.AlignCenter)
-        self._widget.durationTable.setItem(int(event_list[0]), int(event_list[1]), item)
+        duration_table = rospy.get_param('duration_table')
+        for i in range(0,4):
+            for j in range(0,2):
+                item = QTableWidgetItem(str(duration_table[i+4*j]))
+                item.setTextAlignment(Qt.AlignCenter)
+                self._widget.durationTable.setItem(i, j, item)
 
     def start_timer(self, event):
         global ss,ms, handover_status
@@ -353,4 +355,56 @@ class PVdesignUI(Plugin):
     
     def changeValueSlider3(self):
         self.slider3value = self._widget.horizontalSlider_3.value()/100.0
+        self._widget.label_14.setText(str(self.slider3value))
+
+
+class DummyedesignUI(Plugin):
+
+    def __init__(self):
+        QDialog.__init__(self)
+        # Create QDialog
+        self._widget = QDialog()
+        # Get path to UI file which should be in the "resource" folder of this package
+        ui_file = os.path.join(rospkg.RosPack().get_path('stl_experiment_ui'), 'user_interface', 'dummy_controller_design.ui')
+        # Extend the widget with all attributes and children from UI file
+        loadUi(ui_file, self._widget)
+        # Give QObjects reasonable names
+        self._widget.setObjectName('Practice Controller Design UI')
+        # Show _widget.windowTitle on left-top of each plugin (when 
+        # it's set in _widget). This is useful when you open multiple 
+        # plugins at once. Also if you open multiple instances of your 
+        # plugin at once, these lines add number to make it easy to 
+        # tell from pane to pane.
+        self._widget.setWindowTitle(self._widget.windowTitle())
+        # Slider functionality
+        self.slider1value = self._widget.horizontalSlider.value()/20.0
+        self.slider2value = self._widget.horizontalSlider_2.value()/20.0
+        self.slider3value = self._widget.horizontalSlider_3.value()/20.0
+
+        self._widget.horizontalSlider.valueChanged.connect(self.changeValueSlider1)
+        self._widget.horizontalSlider_2.valueChanged.connect(self.changeValueSlider2)
+        self._widget.horizontalSlider_3.valueChanged.connect(self.changeValueSlider3)
+
+        # Button functionality
+        self._widget.generateControllerButton.clicked.connect(self.generate_controller)
+
+    def shutdown_plugin(self):
+        # TODO unregister all publishers here
+        pass
+
+    def generate_controller(self):
+        rospy.set_param('pid_kp_1', 5*self.slider1value)
+        rospy.set_param('pid_kp_2', 5*self.slider2value)
+        rospy.set_param('pid_kp_3', 5*self.slider3value)
+        
+    def changeValueSlider1(self):
+        self.slider1value = self._widget.horizontalSlider.value()/20.0
+        self._widget.label_12.setText(str(self.slider1value))
+    
+    def changeValueSlider2(self):
+        self.slider2value = self._widget.horizontalSlider_2.value()/20.0
+        self._widget.label_13.setText(str(self.slider2value))
+    
+    def changeValueSlider3(self):
+        self.slider3value = self._widget.horizontalSlider_3.value()/20.0
         self._widget.label_14.setText(str(self.slider3value))

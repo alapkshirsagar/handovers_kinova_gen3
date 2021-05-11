@@ -205,7 +205,9 @@ class PIDVelocityController(object):
 
         # Go to home position
         print('Object grasped, moving to hover position')
-        self.kinova_controller.action_arm_pose(self.config.hover_location,self.config.object_orientation)
+        # self.kinova_controller.action_arm_pose(self.config.hover_location,self.config.object_orientation)
+        self.kinova_controller.home_the_robot()
+
 
         # Open gripper
         # print('Reached home position, opening gripper in 2 seconds')
@@ -234,259 +236,261 @@ class PIDVelocityController(object):
             return False
 
 
-class DMPVelocityController(object):
-    def __init__(self, config=None, kinova_controller= None, **kwargs):
-        super(DMPVelocityController, self).__init__(**kwargs)
-        self.config = config
-        self.kinova_controller = kinova_controller
-        self.velocity_publisher = rospy.Publisher(self.config.arm_velocity_pub_topic, TwistCommand, queue_size=10)
-        self.tf_listener = tf.TransformListener()
-        self.clf_x = SVR(C=10.0, epsilon=0.1)
-        self.clf_y = SVR(C=10.0, epsilon=0.1)
-        self.clf_z = SVR(C=10.0, epsilon=0.1)
+# class DMPVelocityController(object):
+#     def __init__(self, config=None, kinova_controller= None, **kwargs):
+#         super(DMPVelocityController, self).__init__(**kwargs)
+#         self.config = config
+#         self.kinova_controller = kinova_controller
+#         self.velocity_publisher = rospy.Publisher(self.config.arm_velocity_pub_topic, TwistCommand, queue_size=10)
+#         self.tf_listener = tf.TransformListener()
+#         self.clf_x = SVR(C=10.0, epsilon=0.1)
+#         self.clf_y = SVR(C=10.0, epsilon=0.1)
+#         self.clf_z = SVR(C=10.0, epsilon=0.1)
 
-        if self.config.dmp_record_trajectory:
-            self.trajectory_file = open("human_trajectory.txt", "w")
-            self.record_human_trajectory()
-        with open("human_trajectory_good.txt") as textFile:
-            trajectory = [[float(digit) for digit in line.split(",")] for line in textFile]
-        trajectory = np.array(trajectory)
-        self.learn_forcing_term(trajectory)
+#         if self.config.dmp_record_trajectory:
+#             self.trajectory_file = open("human_trajectory.txt", "w")
+#             self.record_human_trajectory()
+#         with open("human_trajectory_good.txt") as textFile:
+#             trajectory = [[float(digit) for digit in line.split(",")] for line in textFile]
+#         trajectory = np.array(trajectory)
+#         self.learn_forcing_term(trajectory)
 
-    def record_human_trajectory(self):
-        rospy.sleep(2.0)
-        rate = rospy.Rate(self.config.dmp_loop_rate)
-        print("Start motion")
-        t_end = rospy.get_time() + 3
-        while rospy.get_time() < t_end:
-            (trans_human, rot_human) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_human_hand, rospy.Time(0))
-            self.trajectory_file.write(str(trans_human[0])+","+str(trans_human[1])+","+str(trans_human[2])+"\n")
-            rate.sleep()
-        self.trajectory_file.close()
-        print("Stop motion")
-
-
-    def learn_forcing_term(self, trajectory):
-        f_s = np.zeros((trajectory.shape[0] - 1, 3))
-        x = np.zeros((trajectory.shape[0] - 1, 3))
-        v = np.zeros((trajectory.shape[0] - 1, 3))
-        vdot = np.zeros((trajectory.shape[0] - 1, 3))
-        target = trajectory[-1,:]
-        s = np.ones(trajectory.shape[0] - 1)
-        sdot = np.zeros(trajectory.shape[0] - 1)
-        t = np.zeros(trajectory.shape[0] - 1)
-        w_g = np.zeros(trajectory.shape[0] - 1)
-
-        self.config.dmp_tau = 1.0*trajectory.shape[0]/self.config.dmp_loop_rate
-        print("tau", self.config.dmp_tau)
-        for timestep in range(0, trajectory.shape[0] - 2):
-            t[timestep] = (timestep*1.0)/self.config.dmp_loop_rate
-            x[timestep, :] = trajectory[timestep, :]
-            v[timestep, :] = (trajectory[timestep + 1, :] - trajectory[timestep, :])*self.config.dmp_loop_rate
-            v[timestep+1, :] = (trajectory[timestep + 2, :] - trajectory[timestep+1, :])*self.config.dmp_loop_rate
-            vdot[timestep, :] = (v[timestep + 1, :] - v[timestep, :])*self.config.dmp_loop_rate
-            sdot[timestep] = 1.0 / self.config.dmp_tau * (-self.config.dmp_alpha * s[timestep])
-            w_g[timestep] = 0.5 * (1.0 + erf((t[timestep] - self.config.dmp_mu) / (np.sqrt(2) * self.config.dmp_sigma)))*(0.9+0.1*t[timestep]/self.config.dmp_tau)
-            print("Time", t[timestep])
-            print("w_g", w_g[timestep])
-            f_s[timestep, :] = (1.0 / (1.0 - w_g[timestep])) * (
-                        self.config.dmp_tau * vdot[timestep, :] - w_g[timestep] * (self.config.dmp_kp * (target - x[timestep, :])) + self.config.dmp_kd * v[timestep, :]) + x[timestep, :] - x[0, :]
-            s[timestep+1] = s[timestep] + sdot[timestep]/self.config.dmp_loop_rate
-        timestep = timestep + 1
-        t[timestep] = (timestep*1.0)/self.config.dmp_loop_rate
-        x[timestep, :] = trajectory[timestep, :]
-        v[timestep, :] = (trajectory[timestep + 1, :] -trajectory[timestep, :])*self.config.dmp_loop_rate
-        w_g[timestep] = 0.5 * (1.0 + erf((t[timestep] - self.config.dmp_mu) / (np.sqrt(2) * self.config.dmp_sigma)))*(0.9+0.1*t[timestep]/self.config.dmp_tau)
-
-        print("t", t)
-        print("x", x)
-
-        # plt.close('all')
-        # plt.plot(t, x[:,1])
-        # plt.plot(t, v[:,0])
-        # plt.plot(t, vdot[:,0])
-        # plt.plot(t, sdot)
-        # plt.plot(t, s)
-        # plt.plot(t, w_g)
-        # plt.plot(t, f_s[:,0])
-        # plt.plot(s, f_s[:,0])
-        print(f_s[:,0].reshape(-1, 1))
-        self.clf_x.fit(s.reshape(-1, 1), f_s[:,0].reshape(-1, 1).ravel())
-        self.clf_y.fit(s.reshape(-1, 1), f_s[:,1].reshape(-1, 1))
-        self.clf_z.fit(s.reshape(-1, 1), f_s[:,2].reshape(-1, 1))
-        self.clf_x.get_params()
-        self.clf_y.get_params()
-        self.clf_z.get_params()
-
-        ##Sample values
-        s_test = np.arange(0,1.1, 0.1)
-        f_w = np.array([self.clf_x.predict(s_test.reshape(-1, 1)), self.clf_y.predict(s_test.reshape(-1, 1)), self.clf_z.predict(s_test.reshape(-1, 1))])
-        print("f_w term", f_w )
-        # plt.plot(s_test, f_w[0,:])
-        # plt.show()
-
-        # self.test_human_trajectory(trajectory)
-
-    def test_human_trajectory(self, trajectory):
-        self.config.dmp_tau = self.config.dmp_tau*2
-        dt = 1.0/self.config.dmp_loop_rate
-        x = [0.1, 0.3, 0.5]
-        target = np.array([0.4, 0.5, 0.5])
-        # x = trajectory[0,:]
-        # target = trajectory[-1,:]
-
-        x0 = x
-        xdot = np.array([0,0,0])
-        v = np.array([0,0,0])
-        vdot = np.array([0,0,0])
-        s = np.array([1.0])
-        sdot = 0
-        for timestep in range(0, 100):
-            t = timestep * dt * 1.0
-            w_g = 0.5 * (1.0 + erf((t - self.config.dmp_mu) / (np.sqrt(2.0) * self.config.dmp_sigma)))
-            f_w = np.array([self.clf_x.predict(s.reshape(-1, 1)), self.clf_y.predict(s.reshape(-1, 1)), self.clf_z.predict(s.reshape(-1, 1))]).flatten()
-            vdot = 1.0/self.config.dmp_tau*((1.0-w_g)*(f_w + x - x0) + w_g* (0.5 * self.config.dmp_kp * (target - x) - self.config.dmp_kd * v))
-            xdot = 1.0 / self.config.dmp_tau * (v)
-            sdot = 1.0 / self.config.dmp_tau * (-self.config.dmp_alpha * s)
-            vdot[0] = min(vdot[0], self.config.max_velocity)
-            vdot[1] = min(vdot[1], self.config.max_velocity)
-            vdot[2] = min(vdot[2], self.config.max_velocity)
-
-            v = v + vdot * dt
-            x = x + xdot * dt
-            s = s + sdot * dt
-            print(target)
-            plt.scatter(timestep * dt, v[0])
-        plt.show()
-
-    def robot_move_dmp(self, goal):
-        reached = False
-        rate = rospy.Rate(self.config.dmp_loop_rate)
-        prev_target = 0.0
-        velocity = 0.0
-        time = 0.0
-        s = np.array([1.0])
-        state0 = np.array([0.0,0.0,0.0])
-        self.config.dmp_tau = self.config.dmp_tau*2
-
-        while not rospy.is_shutdown() and not reached:
-            try:
-                (trans_robot, rot_robot) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_gripper, rospy.Time(0))
-                # (trans_object, rot_object) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_object, rospy.Time(0))
-                (trans_human, rot_human) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_human_hand, rospy.Time(0))
-                # print("Human position =", trans_human)
-                # print("Robot position =", trans_robot)
-                if time is 0.0:
-                    state0 = trans_robot
-                time = time + 1.0/self.config.dmp_loop_rate
-                # print("Time", time)
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-                print 'Could not find transform'
-                continue
-
-            if goal == 'human_hand':
-                # Compute velocity of human hand
-                if prev_target is 0.0:
-                    target_velocity = 0.0
-                else:
-                    target_velocity = [(trans_human[0]-prev_target[0])*self.config.dmp_loop_rate, (trans_human[1]-prev_target[1])*self.config.dmp_loop_rate, (trans_human[2]-prev_target[2])*self.config.dmp_loop_rate]
-                prev_target = trans_human
-                # Compute target position
-                target = np.array((trans_human)) + self.config.offset_gripper_object #difference = math.sqrt((trans_object[0]-trans_robot[0])**2+(trans_object[1]-trans_robot[1])**2+(trans_object[2]-trans_robot[2])**2)
-            else:
-                target = goal
-                target_velocity = [0,0,0]
-            w_g = 0.5 * (1.0 + erf((time - self.config.dmp_mu) / (np.sqrt(2) * self.config.dmp_sigma)))
-            f_w = np.array([self.clf_x.predict(s.reshape(-1, 1)), self.clf_y.predict(s.reshape(-1, 1)), self.clf_z.predict(s.reshape(-1, 1))]).flatten()
-            acceleration = 1.0/self.config.dmp_tau*((1.0-w_g)*(f_w + trans_robot - state0) + w_g*(self.config.dmp_kp*(target-trans_robot) - self.config.dmp_kd*(velocity)))
-            velocity = velocity + acceleration/self.config.dmp_loop_rate
-            # print("Trans_robot", trans_robot)
-            # print("f_w term", f_w + trans_robot - state0)
-            # print("goal term", self.config.dmp_kp*(target-trans_robot) - self.config.dmp_kd*(velocity))
-            # print("w_g", w_g)
-            sdot = -1.0/self.config.dmp_tau*self.config.dmp_alpha*s
-            s = s + sdot/self.config.dmp_loop_rate
-
-            velocity_input = velocity/self.config.dmp_tau
-            velocity_magnitude = math.sqrt(velocity_input[0]**2+velocity_input[1]**2+velocity_input[2]**2)
-            difference = math.sqrt((target[0]-trans_robot[0])**2+(target[1]-trans_robot[1])**2+(target[2]-trans_robot[2])**2)
-            # print difference
-            velocity_magnitude_floor = min(velocity_magnitude, self.config.max_velocity)
-            # print("Acceleration = ", acceleration)
-            #print("Velocity =", velocity_input)
-            plt.scatter(time, f_w[0])
-            if difference < self.config.pid_distance_threshold:
-                velocity_magnitude_floor = 0
-                reached = True
-
-            velocity_x = velocity_magnitude_floor*(velocity_input[0])/velocity_magnitude
-            velocity_y = velocity_magnitude_floor*(velocity_input[1])/velocity_magnitude
-            velocity_z = velocity_magnitude_floor*(velocity_input[2])/velocity_magnitude
-            velocity = np.array([velocity_x, velocity_y, velocity_z])*self.config.dmp_tau
-            print(velocity_x, velocity_y, velocity_z)
-            velocity_message = TwistCommand()
-            velocity_message.twist.linear_x = velocity_x
-            velocity_message.twist.linear_y = velocity_y
-            velocity_message.twist.linear_z = velocity_z
-
-            self.velocity_publisher.publish(velocity_message)
-            rate.sleep()
-
-    def perform_handover(self, iterations=1):
-        # # Go to home position
-        # print('Going to home position')
-        # self.robot_move_proportional(self.config.home_location_optitrack)
-        # print("Reached home position, waiting for 2 seconds and then opening gripper")
-        #
-        #
-        # # Open Gripper, wait for 3 seconds and close gripper
-        # rospy.sleep(2.0)
-        # self.gripper_controller.gripper_move(self.config.gripper_open)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
-        # print("Opened gripper, waiting for 3 seconds and then closing gripper")
-        # rospy.sleep(3.0)
-        # self.gripper_controller.gripper_grasp(self.config.gripper_close)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
-
-        print("Gripper closed, waiting for human to enter handover zone")
-        # Go to handover location
-        while (not self.check_human_handover_zone()):
-            rospy.sleep(0.02)
-        print('Human entered handover zone, moving towards human hand')
-        self.robot_move_dmp('human_hand')
-
-        # Open gripper
-        # plt.show(block=False)
-        print('Hand close to gripper, opening gripper')
-        self.kinova_controller.send_gripper_command_client(self.config.gripper_open)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
-
-        # Go to home position
-        print('Object grasped, moving to hover position')
-        self.kinova_controller.action_arm_pose(self.config.hover_location,self.config.object_orientation)
-
-        # Open gripper
-        # print('Reached home position, opening gripper in 2 seconds')
-        # rospy.sleep(2.0)
-        # self.kinova_controller.send_gripper_command_client(self.config.gripper_open)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
-        # print('Opened gripper')
-
-    def check_human_handover_zone(self):
-        try:
-            (trans_robot, rot_robot) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_gripper, rospy.Time(0))
-            # (trans_object, rot_object) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_object, rospy.Time(0))
-            (trans_human, rot_human) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_human_hand, rospy.Time(0))
-            #print(trans_object)
-        except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-            print 'Could not find transform'
+#     def record_human_trajectory(self):
+#         rospy.sleep(2.0)
+#         rate = rospy.Rate(self.config.dmp_loop_rate)
+#         print("Start motion")
+#         t_end = rospy.get_time() + 3
+#         while rospy.get_time() < t_end:
+#             (trans_human, rot_human) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_human_hand, rospy.Time(0))
+#             self.trajectory_file.write(str(trans_human[0])+","+str(trans_human[1])+","+str(trans_human[2])+"\n")
+#             rate.sleep()
+#         self.trajectory_file.close()
+#         print("Stop motion")
 
 
-        # # difference = math.sqrt((trans_human[0]-trans_robot[0])**2+(trans_human[1]-trans_robot[1])**2+(trans_human[2]-trans_robot[2])**2)
-        # if difference > self.config.handover_zone_threshold:
-        #     return False
-        # else:
-        #     return True
-        if trans_human[0] > self.config.handover_zone_boundaries[0] and trans_human[0] < self.config.handover_zone_boundaries[1] and trans_human[1] > self.config.handover_zone_boundaries[2] and trans_human[1] < self.config.handover_zone_boundaries[3]:
-            return True
-        else:
-            return False
+#     def learn_forcing_term(self, trajectory):
+#         f_s = np.zeros((trajectory.shape[0] - 1, 3))
+#         x = np.zeros((trajectory.shape[0] - 1, 3))
+#         v = np.zeros((trajectory.shape[0] - 1, 3))
+#         vdot = np.zeros((trajectory.shape[0] - 1, 3))
+#         target = trajectory[-1,:]
+#         s = np.ones(trajectory.shape[0] - 1)
+#         sdot = np.zeros(trajectory.shape[0] - 1)
+#         t = np.zeros(trajectory.shape[0] - 1)
+#         w_g = np.zeros(trajectory.shape[0] - 1)
+
+#         self.config.dmp_tau = 1.0*trajectory.shape[0]/self.config.dmp_loop_rate
+#         print("tau", self.config.dmp_tau)
+#         for timestep in range(0, trajectory.shape[0] - 2):
+#             t[timestep] = (timestep*1.0)/self.config.dmp_loop_rate
+#             x[timestep, :] = trajectory[timestep, :]
+#             v[timestep, :] = (trajectory[timestep + 1, :] - trajectory[timestep, :])*self.config.dmp_loop_rate
+#             v[timestep+1, :] = (trajectory[timestep + 2, :] - trajectory[timestep+1, :])*self.config.dmp_loop_rate
+#             vdot[timestep, :] = (v[timestep + 1, :] - v[timestep, :])*self.config.dmp_loop_rate
+#             sdot[timestep] = 1.0 / self.config.dmp_tau * (-self.config.dmp_alpha * s[timestep])
+#             w_g[timestep] = 0.5 * (1.0 + erf((t[timestep] - self.config.dmp_mu) / (np.sqrt(2) * self.config.dmp_sigma)))*(0.9+0.1*t[timestep]/self.config.dmp_tau)
+#             print("Time", t[timestep])
+#             print("w_g", w_g[timestep])
+#             f_s[timestep, :] = (1.0 / (1.0 - w_g[timestep])) * (
+#                         self.config.dmp_tau * vdot[timestep, :] - w_g[timestep] * (self.config.dmp_kp * (target - x[timestep, :])) + self.config.dmp_kd * v[timestep, :]) + x[timestep, :] - x[0, :]
+#             s[timestep+1] = s[timestep] + sdot[timestep]/self.config.dmp_loop_rate
+#         timestep = timestep + 1
+#         t[timestep] = (timestep*1.0)/self.config.dmp_loop_rate
+#         x[timestep, :] = trajectory[timestep, :]
+#         v[timestep, :] = (trajectory[timestep + 1, :] -trajectory[timestep, :])*self.config.dmp_loop_rate
+#         w_g[timestep] = 0.5 * (1.0 + erf((t[timestep] - self.config.dmp_mu) / (np.sqrt(2) * self.config.dmp_sigma)))*(0.9+0.1*t[timestep]/self.config.dmp_tau)
+
+#         print("t", t)
+#         print("x", x)
+
+#         # plt.close('all')
+#         # plt.plot(t, x[:,1])
+#         # plt.plot(t, v[:,0])
+#         # plt.plot(t, vdot[:,0])
+#         # plt.plot(t, sdot)
+#         # plt.plot(t, s)
+#         # plt.plot(t, w_g)
+#         # plt.plot(t, f_s[:,0])
+#         # plt.plot(s, f_s[:,0])
+#         print(f_s[:,0].reshape(-1, 1))
+#         self.clf_x.fit(s.reshape(-1, 1), f_s[:,0].reshape(-1, 1).ravel())
+#         self.clf_y.fit(s.reshape(-1, 1), f_s[:,1].reshape(-1, 1))
+#         self.clf_z.fit(s.reshape(-1, 1), f_s[:,2].reshape(-1, 1))
+#         self.clf_x.get_params()
+#         self.clf_y.get_params()
+#         self.clf_z.get_params()
+
+#         ##Sample values
+#         s_test = np.arange(0,1.1, 0.1)
+#         f_w = np.array([self.clf_x.predict(s_test.reshape(-1, 1)), self.clf_y.predict(s_test.reshape(-1, 1)), self.clf_z.predict(s_test.reshape(-1, 1))])
+#         print("f_w term", f_w )
+#         # plt.plot(s_test, f_w[0,:])
+#         # plt.show()
+
+#         # self.test_human_trajectory(trajectory)
+
+#     def test_human_trajectory(self, trajectory):
+#         self.config.dmp_tau = self.config.dmp_tau*2
+#         dt = 1.0/self.config.dmp_loop_rate
+#         x = [0.1, 0.3, 0.5]
+#         target = np.array([0.4, 0.5, 0.5])
+#         # x = trajectory[0,:]
+#         # target = trajectory[-1,:]
+
+#         x0 = x
+#         xdot = np.array([0,0,0])
+#         v = np.array([0,0,0])
+#         vdot = np.array([0,0,0])
+#         s = np.array([1.0])
+#         sdot = 0
+#         for timestep in range(0, 100):
+#             t = timestep * dt * 1.0
+#             w_g = 0.5 * (1.0 + erf((t - self.config.dmp_mu) / (np.sqrt(2.0) * self.config.dmp_sigma)))
+#             f_w = np.array([self.clf_x.predict(s.reshape(-1, 1)), self.clf_y.predict(s.reshape(-1, 1)), self.clf_z.predict(s.reshape(-1, 1))]).flatten()
+#             vdot = 1.0/self.config.dmp_tau*((1.0-w_g)*(f_w + x - x0) + w_g* (0.5 * self.config.dmp_kp * (target - x) - self.config.dmp_kd * v))
+#             xdot = 1.0 / self.config.dmp_tau * (v)
+#             sdot = 1.0 / self.config.dmp_tau * (-self.config.dmp_alpha * s)
+#             vdot[0] = min(vdot[0], self.config.max_velocity)
+#             vdot[1] = min(vdot[1], self.config.max_velocity)
+#             vdot[2] = min(vdot[2], self.config.max_velocity)
+
+#             v = v + vdot * dt
+#             x = x + xdot * dt
+#             s = s + sdot * dt
+#             print(target)
+#             plt.scatter(timestep * dt, v[0])
+#         plt.show()
+
+#     def robot_move_dmp(self, goal):
+#         reached = False
+#         rate = rospy.Rate(self.config.dmp_loop_rate)
+#         prev_target = 0.0
+#         velocity = 0.0
+#         time = 0.0
+#         s = np.array([1.0])
+#         state0 = np.array([0.0,0.0,0.0])
+#         self.config.dmp_tau = self.config.dmp_tau*2
+
+#         while not rospy.is_shutdown() and not reached:
+#             try:
+#                 (trans_robot, rot_robot) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_gripper, rospy.Time(0))
+#                 # (trans_object, rot_object) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_object, rospy.Time(0))
+#                 (trans_human, rot_human) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_human_hand, rospy.Time(0))
+#                 # print("Human position =", trans_human)
+#                 # print("Robot position =", trans_robot)
+#                 if time is 0.0:
+#                     state0 = trans_robot
+#                 time = time + 1.0/self.config.dmp_loop_rate
+#                 # print("Time", time)
+#             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+#                 print 'Could not find transform'
+#                 continue
+
+#             if goal == 'human_hand':
+#                 # Compute velocity of human hand
+#                 if prev_target is 0.0:
+#                     target_velocity = 0.0
+#                 else:
+#                     target_velocity = [(trans_human[0]-prev_target[0])*self.config.dmp_loop_rate, (trans_human[1]-prev_target[1])*self.config.dmp_loop_rate, (trans_human[2]-prev_target[2])*self.config.dmp_loop_rate]
+#                 prev_target = trans_human
+#                 # Compute target position
+#                 target = np.array((trans_human)) + self.config.offset_gripper_object #difference = math.sqrt((trans_object[0]-trans_robot[0])**2+(trans_object[1]-trans_robot[1])**2+(trans_object[2]-trans_robot[2])**2)
+#             else:
+#                 target = goal
+#                 target_velocity = [0,0,0]
+#             w_g = 0.5 * (1.0 + erf((time - self.config.dmp_mu) / (np.sqrt(2) * self.config.dmp_sigma)))
+#             f_w = np.array([self.clf_x.predict(s.reshape(-1, 1)), self.clf_y.predict(s.reshape(-1, 1)), self.clf_z.predict(s.reshape(-1, 1))]).flatten()
+#             acceleration = 1.0/self.config.dmp_tau*((1.0-w_g)*(f_w + trans_robot - state0) + w_g*(self.config.dmp_kp*(target-trans_robot) - self.config.dmp_kd*(velocity)))
+#             velocity = velocity + acceleration/self.config.dmp_loop_rate
+#             # print("Trans_robot", trans_robot)
+#             # print("f_w term", f_w + trans_robot - state0)
+#             # print("goal term", self.config.dmp_kp*(target-trans_robot) - self.config.dmp_kd*(velocity))
+#             # print("w_g", w_g)
+#             sdot = -1.0/self.config.dmp_tau*self.config.dmp_alpha*s
+#             s = s + sdot/self.config.dmp_loop_rate
+
+#             velocity_input = velocity/self.config.dmp_tau
+#             velocity_magnitude = math.sqrt(velocity_input[0]**2+velocity_input[1]**2+velocity_input[2]**2)
+#             difference = math.sqrt((target[0]-trans_robot[0])**2+(target[1]-trans_robot[1])**2+(target[2]-trans_robot[2])**2)
+#             # print difference
+#             velocity_magnitude_floor = min(velocity_magnitude, self.config.max_velocity)
+#             # print("Acceleration = ", acceleration)
+#             #print("Velocity =", velocity_input)
+#             plt.scatter(time, f_w[0])
+#             if difference < self.config.pid_distance_threshold:
+#                 velocity_magnitude_floor = 0
+#                 reached = True
+
+#             velocity_x = velocity_magnitude_floor*(velocity_input[0])/velocity_magnitude
+#             velocity_y = velocity_magnitude_floor*(velocity_input[1])/velocity_magnitude
+#             velocity_z = velocity_magnitude_floor*(velocity_input[2])/velocity_magnitude
+#             velocity = np.array([velocity_x, velocity_y, velocity_z])*self.config.dmp_tau
+#             print(velocity_x, velocity_y, velocity_z)
+#             velocity_message = TwistCommand()
+#             velocity_message.twist.linear_x = velocity_x
+#             velocity_message.twist.linear_y = velocity_y
+#             velocity_message.twist.linear_z = velocity_z
+
+#             self.velocity_publisher.publish(velocity_message)
+#             rate.sleep()
+
+#     def perform_handover(self, iterations=1):
+#         # # Go to home position
+#         # print('Going to home position')
+#         # self.robot_move_proportional(self.config.home_location_optitrack)
+#         # print("Reached home position, waiting for 2 seconds and then opening gripper")
+#         #
+#         #
+#         # # Open Gripper, wait for 3 seconds and close gripper
+#         # rospy.sleep(2.0)
+#         # self.gripper_controller.gripper_move(self.config.gripper_open)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
+#         # print("Opened gripper, waiting for 3 seconds and then closing gripper")
+#         # rospy.sleep(3.0)
+#         # self.gripper_controller.gripper_grasp(self.config.gripper_close)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
+
+#         print("Gripper closed, waiting for human to enter handover zone")
+#         # Go to handover location
+#         while (not self.check_human_handover_zone()):
+#             rospy.sleep(0.02)
+#         print('Human entered handover zone, moving towards human hand')
+#         self.robot_move_dmp('human_hand')
+
+#         # Open gripper
+#         # plt.show(block=False)
+#         print('Hand close to gripper, opening gripper')
+#         self.kinova_controller.send_gripper_command_client(self.config.gripper_open)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
+
+#         # Go to home position
+#         print('Object grasped, moving to hover position')
+#         # self.kinova_controller.action_arm_pose(self.config.hover_location,self.config.object_orientation)
+#         self.kinova_controller.home_the_robot()
+
+
+#         # Open gripper
+#         # print('Reached home position, opening gripper in 2 seconds')
+#         # rospy.sleep(2.0)
+#         # self.kinova_controller.send_gripper_command_client(self.config.gripper_open)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
+#         # print('Opened gripper')
+
+#     def check_human_handover_zone(self):
+#         try:
+#             (trans_robot, rot_robot) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_gripper, rospy.Time(0))
+#             # (trans_object, rot_object) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_object, rospy.Time(0))
+#             (trans_human, rot_human) = self.tf_listener.lookupTransform(self.config.optitrack_tf_origin, self.config.optitrack_tf_human_hand, rospy.Time(0))
+#             #print(trans_object)
+#         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+#             print 'Could not find transform'
+
+
+#         # # difference = math.sqrt((trans_human[0]-trans_robot[0])**2+(trans_human[1]-trans_robot[1])**2+(trans_human[2]-trans_robot[2])**2)
+#         # if difference > self.config.handover_zone_threshold:
+#         #     return False
+#         # else:
+#         #     return True
+#         if trans_human[0] > self.config.handover_zone_boundaries[0] and trans_human[0] < self.config.handover_zone_boundaries[1] and trans_human[1] > self.config.handover_zone_boundaries[2] and trans_human[1] < self.config.handover_zone_boundaries[3]:
+#             return True
+#         else:
+#             return False
 
 
 class MPCVelocityController(object):
@@ -765,7 +769,8 @@ class MPCVelocityController(object):
 
         # Go to home position
         print('Object grasped, moving to hover position')
-        self.kinova_controller.action_arm_pose(self.config.hover_location,self.config.object_orientation)
+        # self.kinova_controller.action_arm_pose(self.config.hover_location,self.config.object_orientation)
+        self.kinova_controller.home_the_robot()
 
     def check_human_handover_zone(self):
         try:

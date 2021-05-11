@@ -1,0 +1,60 @@
+temp,mpc,design_start,24.355
+temp,mpc,design_end,28.238
+temp,mpc,design_duration,3.88
+temp,mpc,design_no_handovers,0
+temp,mpc,design_robot_idle,3.9
+temp,mpc,design_human_idle,3.5
+temp,mpc,train_safety_zone_duration,0.0
+temp,mpc,design_start,104.256
+temp,mpc,handover_start,113.944
+temp, mpc,handover_success,117.443
+temp,mpc,handover_start,139.864
+temp, mpc,handover_fail,141.554
+temp,mpc,design_end,732.652
+temp,mpc,design_duration,628.4
+temp,mpc,design_no_handovers,0
+temp,mpc,design_robot_idle,616.4
+temp,mpc,design_human_idle,547.9
+temp,mpc,train_safety_zone_duration,0.85
+temp,mpc,test_start,734.364
+temp,mpc,handover_start,742.792
+temp, mpc,handover_fail,745.541
+temp,mpc,handover_start,761.944
+temp, mpc,handover_success,764.944
+temp,mpc,handover_start,776.07
+temp, mpc,handover_success,778.82
+temp,mpc,handover_start,789.896
+temp, mpc,handover_success,792.646
+temp,mpc,handover_start,803.623
+temp, mpc,handover_success,806.622
+temp,mpc,handover_start,817.723
+temp, mpc,handover_success,820.723
+temp,mpc,handover_start,831.774
+temp, mpc,handover_success,834.282
+temp,mpc,handover_start,845.474
+temp, mpc,handover_success,848.224
+temp,mpc,handover_start,859.376
+temp, mpc,handover_success,862.126
+temp,mpc,handover_start,873.302
+temp, mpc,handover_success,876.052
+temp,mpc,handover_start,887.229
+temp, mpc,handover_success,889.979
+temp,mpc,handover_start,901.055
+temp, mpc,handover_success,903.555
+temp,mpc,handover_start,914.731
+temp, mpc,handover_success,917.98
+temp,mpc,handover_start,930.484
+temp, mpc,handover_success,934.233
+temp,mpc,handover_start,945.433
+temp, mpc,handover_success,948.433
+temp,mpc,handover_start,959.159
+temp, mpc,handover_success,962.659
+temp,mpc,handover_start,973.66
+temp, mpc,handover_success,976.66
+temp,mpc,handover_start,987.462
+temp, mpc,handover_success,990.462
+temp,mpc,test_end,993.093
+temp,mpc,test_duration,258.73
+temp,mpc,test_robot_idle,143.0
+temp,mpc,test_human_idle,116.6
+temp,mpc,test_safety_zone_duration,2.8

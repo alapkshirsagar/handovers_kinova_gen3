@@ -25,7 +25,7 @@ class KinovaController:
         # ######################### Fields #####################################
         self.config = HandoverConfig()
         self.robot_name = rospy.get_param('~robot_name', "my_gen3")
-        self.HOME_ACTION_IDENTIFIER = 2
+        self.HOME_ACTION_IDENTIFIER = 1
 
 
 
@@ -203,7 +203,7 @@ class KinovaController:
         else:
             rospy.loginfo("Successfully activated the Action Notifications!")
 
-        rospy.sleep(1.0)
+        rospy.sleep(0.5)
         return True
 
     def clear_faults_client(self):
@@ -214,5 +214,5 @@ class KinovaController:
             return False
         else:
             rospy.loginfo("Cleared the faults successfully")
-            rospy.sleep(2.5)
+            rospy.sleep(0.5)
             return True

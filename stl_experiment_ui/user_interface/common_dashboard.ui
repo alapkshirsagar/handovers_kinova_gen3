@@ -515,7 +515,7 @@
    </row>
    <column>
     <property name="text">
-     <string>Package #</string>
+     <string>Station #</string>
     </property>
    </column>
    <column>
