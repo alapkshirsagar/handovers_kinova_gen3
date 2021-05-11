@@ -169,10 +169,6 @@ pilot6,mpc,design_duration,462.59
 pilot6,mpc,design_no_handovers,0
 pilot6,mpc,design_robot_idle,364.3
 pilot6,mpc,design_human_idle,250.3
-pilot6,mpc,test_start,1940.065
-pilot6,mpc,handover_start,1948.479
-pilot6, mpc,handover_fail,1950.735
-pilot6,mpc,design_start,1969.559
 pilot6,mpc,test_start,1977.909
 pilot6,mpc,handover_start,1986.332
 pilot6, mpc,handover_success,1989.582
