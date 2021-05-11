@@ -25,9 +25,6 @@ pilot9,mpc,design_no_handovers,0
 pilot9,mpc,design_robot_idle,219.6
 pilot9,mpc,design_human_idle,140.9
 pilot9,mpc,train_safety_zone_duration,0.0
-pilot9,mpc,test_start,325.987
-pilot9,mpc,handover_start,334.417
-pilot9, mpc,handover_fail,334.676
 pilot9,mpc,test_start,391.772
 pilot9,mpc,handover_start,400.172
 pilot9, mpc,handover_fail,401.122
