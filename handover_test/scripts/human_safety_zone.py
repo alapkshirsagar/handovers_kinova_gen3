@@ -59,7 +59,7 @@ class human_safety_zone:
 
     def handover_failure_callback(self, message):
         message_list = message.data.split(',')
-        if message_list[0] == 'handover_fail':
+        if message_list[0] == 'handover_fail' or message_list[0] == 'handover_abort':
             self.handover_failure = True
             self.soundHandle.play(SoundRequest.NEEDS_UNPLUGGING)
             rospy.sleep(1.0)

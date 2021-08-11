@@ -13,7 +13,7 @@ import numpy as np
 
 ss = 0
 ms = 0
-handover_status = False
+handover_status = 0 #0 - Fail, 1- Success, 2-Abort
 class ExperimentUI(Plugin):
     start_test_signal = Signal(bool)
     def __init__(self, context):
@@ -72,7 +72,7 @@ class ExperimentUI(Plugin):
                 self.dummy_design_ui._widget.show()
         else:
             print("Here")
-            self._widget.show()
+            # self._widget.show()
             self.start_test_signal.emit(True)
 
 
@@ -83,7 +83,7 @@ class ExperimentUI(Plugin):
         self.start_test_signal.emit(True)
 
     def update_vaccine_stack(self):
-        self._widget.show()
+        # self._widget.show()
         print(self.vaccine_stack_status)
         for i in range(0,3):
             item = QTableWidgetItem(str(self.vaccine_stack_status[i]))
@@ -200,10 +200,13 @@ class TimerUI(Plugin):
             self.data_logger_publisher.publish('handover_start'+','+self.task_controller)
         else:
             self.timer.stop()
-            if handover_status:
+            if handover_status == 1:
                 self.data_logger_publisher.publish('handover_success'+','+self.task_controller)
-            else:
+            elif handover_status == 0:
                 self.data_logger_publisher.publish('handover_fail'+','+self.task_controller)
+            elif handover_status == 2:
+                self.data_logger_publisher.publish('handover_abort'+','+self.task_controller)
+
             ss = 0
             ms = 0
 
@@ -219,13 +222,13 @@ class TimerUI(Plugin):
         print(self.timing_constraints)
         if ss*10+ms > float(self.timing_constraints[1]):
             self._widget.lcdNumber.setStyleSheet(self.red_stylesheet)
-            handover_status = False
+            handover_status = 0
         elif ss*10+ms >= float(self.timing_constraints[0]):
             self._widget.lcdNumber.setStyleSheet(self.green_stylesheet)
-            handover_status = True
+            handover_status = 1
         elif ss*10+ms < float(self.timing_constraints[0]):
             self._widget.lcdNumber.setStyleSheet(self.red_stylesheet)
-            handover_status = False
+            handover_status = 0
 
     
         self._widget.lcdNumber.setDigitCount(len(time))
@@ -240,7 +243,7 @@ class TimerUI(Plugin):
                 + "color: rgb(255,0,0);\n" \
                 + "}"
             self._widget.label_2.setStyleSheet(stylesheet)
-            handover_status = False
+            handover_status = 2
             self.timer_start_signal.emit(False)
         else:
             stylesheet = \
@@ -273,14 +276,23 @@ class STLdesignUI(Plugin):
         # tell from pane to pane.
         self._widget.setWindowTitle(self._widget.windowTitle())
 
-        # Slider functionality
-        self.slider1value = self._widget.horizontalSlider.value()/10.0
-        self.slider2value = self._widget.horizontalSlider_2.value()/10.0
-        self.slider3value = self._widget.horizontalSlider_3.value()/10.0
+        self.min_sec=0.1 
+        self.max_sec=6
 
-        self._widget.horizontalSlider.valueChanged.connect(self.changeValueSlider1)
-        self._widget.horizontalSlider_2.valueChanged.connect(self.changeValueSlider2)
-        self._widget.horizontalSlider_3.valueChanged.connect(self.changeValueSlider3)
+        # Slider functionality
+        # self.slider1value = self._widget.horizontalSlider.value()/10.0
+        # self.slider2value = self._widget.horizontalSlider_2.value()/10.0
+        # self.slider3value = self._widget.horizontalSlider_3.value()/10.0
+
+        # self._widget.horizontalSlider.valueChanged.connect(self.changeValueSlider1)
+        # self._widget.horizontalSlider_2.valueChanged.connect(self.changeValueSlider2)
+        # self._widget.horizontalSlider_3.valueChanged.connect(self.changeValueSlider3)
+        
+       
+        # self._widget.stl_g_val.connect(self.stl_g_val_change)
+        # self._widget.stl_y_val.connect(self.stl_y_val_change)
+        # self._widget.stl_r_val.connect(self.stl_r_val_change)
+
 
         # Button functionality
         self._widget.generateControllerButton.clicked.connect(self.generate_controller)
@@ -290,6 +302,14 @@ class STLdesignUI(Plugin):
         pass
 
     def generate_controller(self):
+        self.slider1value = float(self._widget.stl_g_val.toPlainText())
+        self.slider2value = float(self._widget.stl_y_val.toPlainText())
+        self.slider3value = float(self._widget.stl_r_val.toPlainText())
+
+        self.slider1value = max(min(self.slider1value, self.max_sec), self.min_sec)
+        self.slider2value = max(min(self.slider2value, self.max_sec), self.min_sec)
+        self.slider3value = max(min(self.slider3value, self.max_sec), self.min_sec)
+
         rospy.set_param('mpc_t_1', self.slider1value)
         rospy.set_param('mpc_t_2', self.slider2value)
         rospy.set_param('mpc_t_3', self.slider3value)
@@ -305,6 +325,15 @@ class STLdesignUI(Plugin):
     def changeValueSlider3(self):
         self.slider3value = self._widget.horizontalSlider_3.value()/10.0
         self._widget.label_14.setText(str(self.slider3value))
+
+    # def stl_g_val_change(self, text):
+    #     self.slider1value=text
+
+    # def stl_y_val_change(self, text):
+    #     self.slider1value=text
+
+    # def stl_r_val_change(self, text):
+    #     self.slider1value=text
 
 class PVdesignUI(Plugin):
 
@@ -325,13 +354,16 @@ class PVdesignUI(Plugin):
         # tell from pane to pane.
         self._widget.setWindowTitle(self._widget.windowTitle())
         # Slider functionality
-        self.slider1value = self._widget.horizontalSlider.value()/100.0
-        self.slider2value = self._widget.horizontalSlider_2.value()/100.0
-        self.slider3value = self._widget.horizontalSlider_3.value()/100.0
+        # self.slider1value = self._widget.horizontalSlider.value()/100.0
+        # self.slider2value = self._widget.horizontalSlider_2.value()/100.0
+        # self.slider3value = self._widget.horizontalSlider_3.value()/100.0
 
-        self._widget.horizontalSlider.valueChanged.connect(self.changeValueSlider1)
-        self._widget.horizontalSlider_2.valueChanged.connect(self.changeValueSlider2)
-        self._widget.horizontalSlider_3.valueChanged.connect(self.changeValueSlider3)
+        self.min_gain=0.1 
+        self.max_gain=1
+
+        # self._widget.horizontalSlider.valueChanged.connect(self.changeValueSlider1)
+        # self._widget.horizontalSlider_2.valueChanged.connect(self.changeValueSlider2)
+        # self._widget.horizontalSlider_3.valueChanged.connect(self.changeValueSlider3)
 
         # Button functionality
         self._widget.generateControllerButton.clicked.connect(self.generate_controller)
@@ -341,6 +373,14 @@ class PVdesignUI(Plugin):
         pass
 
     def generate_controller(self):
+        self.slider1value = float(self._widget.pv_g_val.toPlainText())
+        self.slider2value = float(self._widget.pv_y_val.toPlainText())
+        self.slider3value = float(self._widget.pv_r_val.toPlainText())
+
+        self.slider1value = max(min(self.slider1value, self.max_gain), self.min_gain)
+        self.slider2value = max(min(self.slider2value, self.max_gain), self.min_gain)
+        self.slider3value = max(min(self.slider3value, self.max_gain), self.min_gain)
+        
         rospy.set_param('pid_kp_1', self.slider1value)
         rospy.set_param('pid_kp_2', self.slider2value)
         rospy.set_param('pid_kp_3', self.slider3value)

@@ -1,0 +1,176 @@
+participant_number,mpc,design_start,181.591
+participant_number,mpc,design_start,267.67
+participant_number,mpc,design_start,69.577
+participant_number,mpc,design_start,164.485
+participant_number,mpc,handover_start,173.955
+participant_number, mpc,handover_abort,174.167
+participant_number,mpc,handover_start,197.106
+participant_number, mpc,handover_fail,201.356
+participant_number,mpc,handover_start,701.546
+participant_number, mpc,handover_abort,701.78
+participant_number,mpc,handover_start,1133.703
+participant_number, mpc,handover_fail,1138.287
+participant_number,mpc,handover_start,2425.28
+participant_number, mpc,handover_success,2428.562
+participant_number,mpc,handover_start,2594.191
+participant_number, mpc,handover_success,2597.69
+participant_number,mpc,design_end,2635.647
+participant_number,mpc,design_duration,2471.16
+participant_number,mpc,design_no_handovers,0
+participant_number,mpc,design_robot_idle,2440.9
+participant_number,mpc,design_human_idle,2129.1
+participant_number,mpc,train_safety_zone_duration,2.95
+participant_number,mpc,test_start,2640.144
+participant_number,mpc,handover_start,2648.57
+participant_number, mpc,handover_success,2652.07
+participant_number,mpc,handover_start,2663.271
+participant_number, mpc,handover_success,2666.52
+participant_number,mpc,handover_start,2677.722
+participant_number, mpc,handover_success,2681.499
+participant_number,mpc,handover_start,2693.531
+participant_number, mpc,handover_success,2697.327
+participant_number,mpc,handover_start,2708.524
+participant_number, mpc,handover_success,2712.273
+participant_number,mpc,handover_start,2726.524
+participant_number, mpc,handover_fail,2730.524
+participant_number,mpc,handover_start,2744.129
+participant_number, mpc,handover_success,2748.629
+participant_number,mpc,handover_start,2759.852
+participant_number, mpc,handover_success,2763.886
+participant_number,mpc,handover_start,2775.104
+participant_number, mpc,handover_success,2778.871
+participant_number,mpc,handover_start,2790.084
+participant_number, mpc,handover_success,2794.078
+participant_number,mpc,handover_start,2805.28
+participant_number, mpc,handover_success,2809.05
+participant_number,mpc,handover_start,2820.231
+participant_number, mpc,handover_success,2823.732
+participant_number,mpc,handover_start,2834.807
+participant_number, mpc,handover_success,2837.807
+participant_number,mpc,handover_start,2848.983
+participant_number, mpc,handover_fail,2851.733
+participant_number,mpc,handover_start,2862.909
+participant_number, mpc,handover_success,2865.909
+participant_number,mpc,handover_start,2877.109
+participant_number, mpc,handover_success,2880.156
+participant_number,mpc,handover_start,2891.285
+participant_number, mpc,handover_abort,2892.749
+participant_number,mpc,handover_start,2909.137
+participant_number, mpc,handover_success,2912.387
+participant_number,mpc,test_end,2914.937
+participant_number,mpc,test_duration,274.79
+participant_number,mpc,test_robot_idle,163.7
+participant_number,mpc,test_human_idle,123.2
+participant_number,mpc,test_safety_zone_duration,1.85
+participant_number,pid,design_start,1749.706
+participant_number,pid,handover_start,1837.954
+participant_number, pid,handover_success,1840.154
+participant_number,pid,handover_start,1895.234
+participant_number, pid,handover_success,1897.683
+participant_number,pid,handover_start,1914.534
+participant_number, pid,handover_fail,1916.834
+participant_number,pid,handover_start,1942.737
+participant_number, pid,handover_success,1946.837
+participant_number,pid,design_end,1974.492
+participant_number,pid,design_duration,224.79
+participant_number,pid,design_no_handovers,0
+participant_number,pid,design_robot_idle,197.2
+participant_number,pid,design_human_idle,207.1
+participant_number,pid,train_safety_zone_duration,0.55
+participant_number,pid,test_start,1978.158
+participant_number,pid,handover_start,1986.59
+participant_number, pid,handover_success,1988.04
+participant_number,pid,handover_start,1999.141
+participant_number, pid,handover_success,2000.841
+participant_number,pid,handover_start,2011.718
+participant_number, pid,handover_success,2013.218
+participant_number,pid,handover_start,2023.443
+participant_number, pid,handover_success,2025.693
+participant_number,pid,handover_start,2036.769
+participant_number, pid,handover_success,2038.819
+participant_number,pid,handover_start,2049.671
+participant_number, pid,handover_success,2052.021
+participant_number,pid,handover_start,2063.533
+participant_number, pid,handover_success,2065.983
+participant_number,pid,handover_start,2076.523
+participant_number, pid,handover_fail,2078.222
+participant_number,pid,handover_start,2089.173
+participant_number, pid,handover_fail,2090.823
+participant_number,pid,handover_start,2101.975
+participant_number, pid,handover_fail,2103.724
+participant_number,pid,handover_start,2114.901
+participant_number, pid,handover_fail,2116.651
+participant_number,pid,handover_start,2127.553
+participant_number, pid,handover_fail,2129.252
+participant_number,pid,handover_start,2140.052
+participant_number, pid,handover_fail,2142.052
+participant_number,pid,handover_start,2152.703
+participant_number, pid,handover_fail,2154.653
+participant_number,pid,handover_start,2165.354
+participant_number, pid,handover_fail,2167.504
+participant_number,pid,handover_start,2178.231
+participant_number, pid,handover_fail,2180.531
+participant_number,pid,handover_start,2192.549
+participant_number, pid,handover_success,2196.699
+participant_number,pid,handover_start,2207.332
+participant_number, pid,handover_success,2210.732
+participant_number,pid,test_end,2212.94
+participant_number,pid,test_duration,234.78
+participant_number,pid,test_robot_idle,134.6
+participant_number,pid,test_human_idle,88.3
+participant_number,pid,test_safety_zone_duration,4.4
+participant_number,mpc,design_start,2345.187
+participant_number,mpc,handover_start,2364.72
+participant_number, mpc,handover_success,2368.499
+participant_number,mpc,handover_start,2386.346
+participant_number, mpc,handover_success,2390.347
+participant_number,mpc,handover_start,2458.227
+participant_number, mpc,handover_success,2461.383
+participant_number,mpc,design_end,2470.0
+participant_number,mpc,design_duration,124.81
+participant_number,mpc,design_no_handovers,0
+participant_number,mpc,design_robot_idle,102.3
+participant_number,mpc,design_human_idle,42.7
+participant_number,mpc,train_safety_zone_duration,0.0
+participant_number,mpc,test_start,2472.46
+participant_number,mpc,handover_start,2480.925
+participant_number, mpc,handover_success,2483.907
+participant_number,mpc,handover_start,2497.293
+participant_number, mpc,handover_success,2501.088
+participant_number,mpc,handover_start,2512.333
+participant_number, mpc,handover_success,2516.117
+participant_number,mpc,handover_start,2527.384
+participant_number, mpc,handover_success,2531.158
+participant_number,mpc,handover_start,2542.385
+participant_number, mpc,handover_success,2546.135
+participant_number,mpc,handover_start,2557.335
+participant_number, mpc,handover_success,2560.921
+participant_number,mpc,handover_start,2572.087
+participant_number, mpc,handover_success,2574.87
+participant_number,mpc,handover_start,2586.063
+participant_number, mpc,handover_success,2589.836
+participant_number,mpc,handover_start,2601.038
+participant_number, mpc,handover_success,2604.844
+participant_number,mpc,handover_start,2616.015
+participant_number, mpc,handover_success,2619.515
+participant_number,mpc,handover_start,2630.717
+participant_number, mpc,handover_success,2634.297
+participant_number,mpc,handover_start,2645.543
+participant_number, mpc,handover_success,2649.293
+participant_number,mpc,handover_start,2660.519
+participant_number, mpc,handover_success,2664.769
+participant_number,mpc,handover_start,2675.996
+participant_number, mpc,handover_success,2680.246
+participant_number,mpc,handover_start,2691.471
+participant_number, mpc,handover_success,2695.477
+participant_number,mpc,handover_start,2706.673
+participant_number, mpc,handover_success,2710.923
+participant_number,mpc,handover_start,2722.1
+participant_number, mpc,handover_success,2726.143
+participant_number,mpc,handover_start,2737.325
+participant_number, mpc,handover_success,2741.131
+participant_number,mpc,test_end,2743.925
+participant_number,mpc,test_duration,271.47
+participant_number,mpc,test_robot_idle,150.7
+participant_number,mpc,test_human_idle,128.1
+participant_number,mpc,test_safety_zone_duration,1.5

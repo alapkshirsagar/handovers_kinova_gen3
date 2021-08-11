@@ -58,3 +58,63 @@ temp,mpc,test_duration,258.73
 temp,mpc,test_robot_idle,143.0
 temp,mpc,test_human_idle,116.6
 temp,mpc,test_safety_zone_duration,2.8
+temp,mpc,design_start,50.127
+temp,mpc,handover_start,65.472
+temp, mpc,handover_abort,65.687
+temp,mpc,handover_start,91.124
+temp, mpc,handover_fail,93.874
+temp,mpc,handover_start,107.675
+temp, mpc,handover_abort,110.369
+temp,mpc,handover_start,132.926
+temp, mpc,handover_success,136.676
+temp,mpc,design_end,143.172
+temp,mpc,design_duration,93.05
+temp,mpc,design_no_handovers,0
+temp,mpc,design_robot_idle,75.3
+temp,mpc,design_human_idle,59.6
+temp,mpc,train_safety_zone_duration,1.9
+temp,mpc,test_start,147.453
+temp,mpc,handover_start,155.878
+temp, mpc,handover_abort,156.575
+temp,mpc,handover_start,172.981
+temp, mpc,handover_abort,173.946
+temp,mpc,handover_start,190.332
+temp, mpc,handover_abort,191.331
+temp,mpc,handover_start,207.732
+temp, mpc,handover_abort,208.434
+temp,mpc,handover_start,224.834
+temp, mpc,handover_success,226.834
+temp,mpc,handover_start,237.51
+temp, mpc,handover_abort,239.006
+temp,pid,design_start,38.72
+temp,pid,handover_start,49.202
+temp, pid,handover_success,52.001
+temp,pid,handover_start,67.903
+temp, pid,handover_fail,69.153
+temp,pid,handover_start,88.805
+temp, pid,handover_success,91.754
+temp,pid,handover_start,108.181
+temp, pid,handover_success,110.731
+temp,pid,handover_start,130.708
+temp, pid,handover_fail,132.058
+temp,pid,handover_start,162.985
+temp, pid,handover_success,164.085
+temp,pid,handover_start,207.339
+temp, pid,handover_fail,208.489
+temp,pid,handover_start,221.639
+temp, pid,handover_fail,223.739
+temp,pid,handover_start,237.416
+temp, pid,handover_success,240.966
+temp,pid,handover_start,258.218
+temp, pid,handover_fail,259.568
+temp,pid,design_end,269.796
+temp,pid,design_duration,231.08
+temp,pid,design_no_handovers,0
+temp,pid,design_robot_idle,170.6
+temp,pid,design_human_idle,139.3
+temp,pid,train_safety_zone_duration,8.2
+temp,mpc,design_start,326.352
+temp,mpc,handover_start,335.473
+temp, mpc,handover_abort,335.703
+temp,mpc,handover_start,364.526
+temp, mpc,handover_success,368.026

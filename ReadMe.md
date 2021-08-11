@@ -17,6 +17,7 @@ roslaunch kortex_driver kortex_driver.launch gripper:=robotiq_2f_85
 ```
 Terminal-2 (ROS-Motive bridge)
 ```
+export ROS_MASTER_URI=http://192.168.0.103:11311
 export ROS_IP=192.168.0.103
 source devel/setup.bash
 roslaunch mocap_optitrack mocap.launch
