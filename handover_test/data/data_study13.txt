@@ -96,31 +96,6 @@ study13,mpc,design_no_handovers,0
 study13,mpc,design_robot_idle,288.3
 study13,mpc,design_human_idle,290.6
 study13,mpc,train_safety_zone_duration,1.55
-study13,mpc,test_start,1013.243
-study13,mpc,handover_start,1021.656
-study13, mpc,handover_fail,1025.656
-study13,mpc,handover_start,1036.757
-study13, mpc,handover_success,1040.561
-study13,mpc,handover_start,1051.633
-study13, mpc,handover_success,1055.383
-study13,mpc,handover_start,1066.459
-study13,mpc,design_start,1091.028
-study13,mpc,design_end,1094.698
-study13,mpc,design_duration,3.67
-study13,mpc,design_no_handovers,0
-study13,mpc,design_robot_idle,3.3
-study13,mpc,design_human_idle,0.7
-study13,mpc,train_safety_zone_duration,0.3
-study13,mpc,test_start,1104.55
-study13,mpc,handover_start,1112.962
-study13, mpc,handover_abort,1116.925
-study13,mpc,design_start,1137.119
-study13,mpc,design_end,1139.74
-study13,mpc,design_duration,2.62
-study13,mpc,design_no_handovers,0
-study13,mpc,design_robot_idle,2.6
-study13,mpc,design_human_idle,1.1
-study13,mpc,train_safety_zone_duration,0.0
 study13,mpc,test_start,1147.73
 study13,mpc,handover_start,1156.142
 study13, mpc,handover_success,1159.664
