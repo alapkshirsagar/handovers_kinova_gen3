@@ -152,17 +152,7 @@ study14,pid,design_duration,344.91
 study14,pid,design_no_handovers,0
 study14,pid,design_robot_idle,280.2
 study14,pid,design_human_idle,262.3
-study14,pid,train_safety_zone_duration,0.3study14,pid,design_start,3.555
-study14,pid,handover_start,17.811
-study14, pid,handover_success,21.912
-study14,pid,handover_start,61.913
-study14, pid,handover_success,63.963
-study14,pid,design_end,73.31
-study14,pid,design_duration,69.76
-study14,pid,design_no_handovers,0
-study14,pid,design_robot_idle,56.0
-study14,pid,design_human_idle,46.6
-study14,pid,train_safety_zone_duration,0.0
+study14,pid,train_safety_zone_duration,0.3
 study14,pid,test_start,116.776
 study14,pid,handover_start,125.193
 study14, pid,handover_success,126.843
