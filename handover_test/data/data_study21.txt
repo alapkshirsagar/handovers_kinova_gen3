@@ -1,17 +1,3 @@
-study21,mpc,design_start,22.301
-study21,mpc,handover_start,55.581
-study21, mpc,handover_success,58.624
-study21,mpc,handover_start,86.484
-study21, mpc,handover_abort,88.241
-study21,mpc,handover_start,124.612
-study21, mpc,handover_success,128.362
-study21,mpc,handover_start,158.339
-study21, mpc,handover_success,162.112
-study21,mpc,handover_start,182.491
-study21, mpc,handover_abort,186.193
-study21,mpc,handover_start,213.97
-study21,mpc,design_start,238.28
-study21,mpc,handover_start,254.472
 study21,mpc,design_start,276.221
 study21,mpc,handover_start,286.992
 study21,mpc,design_start,311.714
@@ -169,28 +155,6 @@ study21,mpc,design_no_handovers,0
 study21,mpc,design_robot_idle,249.9
 study21,mpc,design_human_idle,200.4
 study21,mpc,train_safety_zone_duration,0.0
-study21,mpc,test_start,2150.263
-study21,mpc,handover_start,2158.673
-study21, mpc,handover_abort,2162.653
-study21,mpc,design_start,2185.297
-study21,mpc,design_end,2190.463
-study21,mpc,design_duration,5.17
-study21,mpc,design_no_handovers,0
-study21,mpc,design_robot_idle,5.2
-study21,mpc,design_human_idle,5.2
-study21,mpc,train_safety_zone_duration,0.0
-study21,mpc,test_start,2194.322
-study21,mpc,handover_start,2202.752
-study21, mpc,handover_abort,2205.977
-study21,mpc,design_start,2306.591
-study21,mpc,handover_start,2317.56
-study21, mpc,handover_success,2321.087
-study21,mpc,design_end,2336.082
-study21,mpc,design_duration,29.49
-study21,mpc,design_no_handovers,0
-study21,mpc,design_robot_idle,23.4
-study21,mpc,design_human_idle,18.8
-study21,mpc,train_safety_zone_duration,1.1
 study21,mpc,test_start,2342.016
 study21,mpc,handover_start,2350.438
 study21, mpc,handover_success,2353.938
