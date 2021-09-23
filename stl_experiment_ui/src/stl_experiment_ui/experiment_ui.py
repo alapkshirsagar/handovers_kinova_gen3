@@ -310,9 +310,18 @@ class STLdesignUI(Plugin):
         self.slider2value = max(min(self.slider2value, self.max_sec), self.min_sec)
         self.slider3value = max(min(self.slider3value, self.max_sec), self.min_sec)
 
+        self.slider4value = float(self._widget.stl_g_val_2.toPlainText())
+        self.slider5value = float(self._widget.stl_y_val_2.toPlainText())
+        self.slider6value = float(self._widget.stl_r_val_2.toPlainText())
+
         rospy.set_param('mpc_t_1', self.slider1value)
         rospy.set_param('mpc_t_2', self.slider2value)
         rospy.set_param('mpc_t_3', self.slider3value)
+
+        rospy.set_param('mpc_tnot_1', self.slider4value)
+        rospy.set_param('mpc_tnot_2', self.slider5value)
+        rospy.set_param('mpc_tnot_3', self.slider6value)
+
         
     def changeValueSlider1(self):
         self.slider1value = self._widget.horizontalSlider.value()/10.0

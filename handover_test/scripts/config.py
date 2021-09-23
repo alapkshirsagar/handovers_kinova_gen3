@@ -32,13 +32,13 @@ class HandoverConfig(object):
 
     # safety_zone_boundaries = [0.1, 0.5, 0.12, 1.1] # [x_min, x_max, y_min, y_max] #rectuangular non allowed region - v1
 
-    safety_zone_boundaries = [0.156, 0.679, -0.12, 1.30] # [x_min, x_max, y_min, y_max] #rectangular non allowed region 
+    safety_zone_boundaries = [0.052, 0.548, -0.130, 1.367] # [x_min, x_max, y_min, y_max] #rectangular non allowed region 
 
-    safety_zone_allowed1_boundaries= [0.105, 0.51 , -0.12, 0.155] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 1
+    safety_zone_allowed1_boundaries= [-0.019, 0.343 , -0.125, 0.144] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 1
 
-    safety_zone_allowed2_boundaries= [0.51, 0.69, 0.42, 0.82] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 2
+    safety_zone_allowed2_boundaries= [0.414, 0.573, 0.42, 0.811] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 2
 
-    safety_zone_allowed3_boundaries= [0.12, 0.49, 0.99, 1.34] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 3
+    safety_zone_allowed3_boundaries= [0.052, 0.385, 1.038, 1.367] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 3
 
     retreat_kp = 1.0
 
@@ -77,8 +77,8 @@ class HandoverConfig(object):
     fixed_handover_location = [0.6, 0, 0.4]
 
     # Robot home location (in robot frame)
-    object_location = [0.409,-0.05,0.153]
-    hover_location = [0.409,-0.05,0.153+0.1]
+    object_location = [0.44,0.025,0.167]
+    hover_location = [0.44,0.025,0.167+0.1]
     object_orientation = [180,0,90]
 
     # Robot home location (in OptiTrack frame)
@@ -108,6 +108,8 @@ class HandoverConfig(object):
 
 ## MPC controller parameters
     stl_reach_time = 5.0
+    stl_reachnot_time = 1.0
+
 ## Optitrack parameters
     optitrack_tf_origin = 'optitrack_origin'
 

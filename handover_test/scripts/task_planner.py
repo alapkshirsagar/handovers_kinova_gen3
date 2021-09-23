@@ -70,7 +70,7 @@ class TaskPlanner():
             if self.task_controller == 'pid' and rospy.has_param('pid_kp_'+str(vaccine_type)):
                 controller_parameter = rospy.get_param('pid_kp_'+str(vaccine_type))
             elif self.task_controller == 'mpc' and rospy.has_param('mpc_t_'+str(vaccine_type)):
-                controller_parameter = rospy.get_param('mpc_t_'+str(vaccine_type))
+                controller_parameter = [rospy.get_param('mpc_t_'+str(vaccine_type)), rospy.get_param('mpc_tnot_'+str(vaccine_type))]
             self.kinova_handover_controller.handover_controller.perform_handover(controller_parameter)
 
             self.stack_status= self.update_stack(vaccine_type)
@@ -102,7 +102,7 @@ class TaskPlanner():
             if self.task_controller == 'pid' and rospy.has_param('pid_kp_'+str(vaccine_type)):
                 controller_parameter = rospy.get_param('pid_kp_'+str(vaccine_type))
             elif self.task_controller == 'mpc' and rospy.has_param('mpc_t_'+str(vaccine_type)):
-                controller_parameter = rospy.get_param('mpc_t_'+str(vaccine_type))
+                controller_parameter = [rospy.get_param('mpc_t_'+str(vaccine_type)), rospy.get_param('mpc_tnot_'+str(vaccine_type))]
             self.kinova_handover_controller.handover_controller.perform_handover(controller_parameter)
 
             self.stack_status=self.update_stack(vaccine_type)

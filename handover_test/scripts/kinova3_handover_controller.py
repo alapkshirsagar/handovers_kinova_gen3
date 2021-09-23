@@ -109,7 +109,7 @@ class KinovaHandoverController:
 
             # ## Go up
             self.kinova_controller.action_arm_pose(hover_location_after_pickup, self.config.object_orientation)
-            rospy.sleep(1)
+            rospy.sleep(1.0)
 
 
 
@@ -508,6 +508,7 @@ class MPCVelocityController(object):
         self.delta_t = 0.25  # time tick
         self.L = 24 # Horizon length
         self.t_reach = self.config.stl_reach_time/self.delta_t*1.0
+        self.t_reachnot = self.config.stl_reachnot_time/self.delta_t*1.0
         self.T = 2*self.L + 1 # Receeding window
         self.u_max = self.config.max_velocity # Maximum velocity
         self.x0 = np.array([[0.0], [0.2], [0.3]]) # Initial position
@@ -572,14 +573,14 @@ class MPCVelocityController(object):
             if goal == 'human_hand':
                 target = np.array((trans_human)) + self.config.offset_gripper_object #difference = math.sqrt((trans_object[0]-trans_robot[0])**2+(trans_object[1]-trans_robot[1])**2+(trans_object[2]-trans_robot[2])**2)
                 target_adjusted = target
-                t_reach = reach_time
+                t_reach = reach_time[0]
                 if trans_human[2] < self.config.height_threshold:
                     target_adjusted[2] = self.config.height_threshold + self.config.offset_gripper_object[2]
                 threshold = self.config.pid_distance_threshold
                 target = np.array((trans_human)) + self.config.offset_gripper_object #difference = math.sqrt((trans_object[0]-trans_robot[0])**2+(trans_object[1]-trans_robot[1])**2+(trans_object[2]-trans_robot[2])**2)
             else:
                 target = goal
-                t_reach = reach_time
+                t_reach = reach_time[0]
                 threshold = self.config.retreat_threshold
 
             print("Running MPC with reach time", t_reach)
@@ -608,7 +609,7 @@ class MPCVelocityController(object):
                 velocity_z = ouz[0]
 
 
-            #print(velocity_x, velocity_y, velocity_z)
+            print(velocity_x, velocity_y, velocity_z)
             velocity_message = TwistCommand()
             velocity_message.twist.linear_x = velocity_x
             velocity_message.twist.linear_y = velocity_y
@@ -629,7 +630,7 @@ class MPCVelocityController(object):
         u = cvxpy.Variable((self.nu, self.L+1))
 
         cost = self.compute_cost(x,u,x_old, u_old, x_target, i)
-        constr = self.compute_constr(x,u, x_old, u_old, x_target, i)
+        constr = self.compute_constr_bidirectional(x,u, x_old, u_old, x_target, i)
         constr += [x[:,0] == x_old[:,-1]]
         prob = cvxpy.Problem(cvxpy.Minimize(cost), constr)
 
@@ -678,15 +679,38 @@ class MPCVelocityController(object):
         # cost = cvxpy.sum_squares(D*x[0,:]) + cvxpy.sum_squares(D*x[1,:]) + cvxpy.sum_squares(D*x[2,:])
 
         ## Minimum jerk cost wrt u
-        _row = np.hstack((np.array([[1.0, -2.0, 1.0]]), np.zeros((1,self.L-1))))
-        _col = np.vstack((np.array([[1.0]]), np.zeros((self.L+1,1))))
-        D = toeplitz(_col, _row)
-        u = cvxpy.hstack([u_old[:,-1].reshape((self.nu,1)), u])
-        cost = cvxpy.sum_squares(D*u[0,:]) + cvxpy.sum_squares(D*u[1,:]) + cvxpy.sum_squares(D*u[2,:])
+        #_row = np.hstack((np.array([[1.0, -2.0, 1.0]]), np.zeros((1,self.L-1))))
+        #_col = np.vstack((np.array([[1.0]]), np.zeros((self.L+1,1))))
+        #D = toeplitz(_col, _row)
+        #u = cvxpy.hstack([u_old[:,-1].reshape((self.nu,1)), u])
+        #cost = cvxpy.sum_squares(D*u[0,:]) + cvxpy.sum_squares(D*u[1,:]) + cvxpy.sum_squares(D*u[2,:])
 
-
+        ## Minimum time cost i.e. squared distance from x_target
+        cost = cvxpy.sum_squares(x[0,:]-x_target[0]) + cvxpy.sum_squares(x[1,:]-x_target[1]) + cvxpy.sum_squares(x[2,:]-x_target[2])
 
         return cost
+
+    def compute_constr_bidirectional(self, x, u, x_old, u_old, x_target, i):
+        constr = []
+        A, B = self.get_model_matrix()
+        for t in range(self.L):
+            constr += [x[:, t + 1] == A * x[:, t] + B * u[:, t]]
+            constr+= [cvxpy.quad_form(u[:,t], np.identity(self.nu, dtype = float)) <= self.u_max*self.u_max]
+        # if i == 0:
+        #     constr += [u[:,0] == np.zeros((self.nu,))]
+        # for t in range(0, int(self.t_reachnot)-i+1):
+            # print(self.x0)
+            # constr+= [cvxpy.quad_form(u[:,i], np.identity(self.nx, dtype = float)) <= self.epsilon*self.epsilon*0.01]
+            # constr+= [cvxpy.quad_form(x[:,t]-self.x0.flatten(), np.identity(self.nx, dtype = float)) <= self.epsilon*self.epsilon]
+        if i < self.t_reachnot:
+            constr+=[u[:,0] == 0]
+        if i > self.t_reachnot and i < self.t_reach+1:
+            constr+= [cvxpy.quad_form(x[:,self.t_reach-i-1]-x_target, np.identity(self.nx, dtype = float)) <= self.epsilon*self.epsilon]
+            constr+= [cvxpy.quad_form(u[:,self.t_reach-i-1], np.identity(self.nx, dtype = float)) <= self.epsilon*self.epsilon*0.01]
+            # print(self.t_reach)
+        # for j in range(self.t_reach-i-1,self.L):
+        #     constr+= [cvxpy.quad_form(u[:,j], np.identity(nx, dtype = float)) <= self.epsilon*self.epsilon]
+        return constr
 
     def compute_constr(self, x, u, x_old, u_old, x_target, i):
         constr = []
@@ -694,8 +718,8 @@ class MPCVelocityController(object):
         for t in range(self.L):
             constr += [x[:, t + 1] == A * x[:, t] + B * u[:, t]]
             constr+= [cvxpy.quad_form(u[:,t], np.identity(self.nu, dtype = float)) <= self.u_max*self.u_max]
-        if i == 0:
-            constr += [u[:,0] == np.zeros((self.nu,))]
+        # if i == 0:
+        #     constr += [u[:,0] == np.zeros((self.nu,))]
         if i < self.t_reach+1:
             constr+= [cvxpy.quad_form(x[:,self.t_reach-i-1]-x_target, np.identity(self.nx, dtype = float)) <= self.epsilon*self.epsilon]
             constr+= [cvxpy.quad_form(u[:,self.t_reach-i-1], np.identity(self.nx, dtype = float)) <= self.epsilon*self.epsilon]
@@ -737,7 +761,8 @@ class MPCVelocityController(object):
         return np.array(a).flatten()
 
     def perform_handover(self, reach_time, iterations=1):
-        self.t_reach = reach_time/self.delta_t*1.0
+        self.t_reach = reach_time[0]/self.delta_t*1.0
+        self.t_reachnot = reach_time[1]/self.delta_t*1.0
 
         # # Go to home position
         # print('Going to home position')
@@ -768,7 +793,8 @@ class MPCVelocityController(object):
             self.kinova_controller.send_gripper_command_client(self.config.gripper_open)  # (distance in m [0.01,0.09], velocity in m/s (0,0.2))
 
         # Go to home position
-        print('Object grasped, moving to hover position')
+        print('Object released, moving to home position')
+        rospy.sleep(0.1)
         # self.kinova_controller.action_arm_pose(self.config.hover_location,self.config.object_orientation)
         self.kinova_controller.home_the_robot()
 
