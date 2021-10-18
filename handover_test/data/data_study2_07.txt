@@ -212,4 +212,49 @@ study2_07,mpc,handover_start,2272.666
 study2_07, mpc,handover_success,2276.166
 study2_07,mpc,design_end,2287.512
 study2_07,mpc,design_duration,330.22
-study2_
+study2_07,mpc,design_no_handovers,0
+study2_07,mpc,design_robot_idle,255.4
+study2_07,mpc,design_human_idle,208.3
+study2_07,mpc,train_safety_zone_duration,0.2
+study2_07,mpc,test_start,2309.908
+study2_07,mpc,handover_start,2318.345
+study2_07, mpc,handover_success,2320.346
+study2_07,mpc,handover_start,2331.622
+study2_07, mpc,handover_success,2333.373
+study2_07,mpc,handover_start,2344.647
+study2_07, mpc,handover_success,2346.397
+study2_07,mpc,handover_start,2357.675
+study2_07, mpc,handover_success,2360.174
+study2_07,mpc,handover_start,2371.45
+study2_07, mpc,handover_success,2373.951
+study2_07,mpc,handover_start,2385.177
+study2_07, mpc,handover_success,2387.678
+study2_07,mpc,handover_start,2398.879
+study2_07, mpc,handover_success,2401.879
+study2_07,mpc,handover_start,2413.13
+study2_07, mpc,handover_success,2415.38
+study2_07,mpc,handover_start,2426.656
+study2_07, mpc,handover_success,2428.906
+study2_07,mpc,handover_start,2440.183
+study2_07, mpc,handover_success,2442.433
+study2_07,mpc,handover_start,2453.709
+study2_07, mpc,handover_success,2455.959
+study2_07,mpc,handover_start,2467.236
+study2_07, mpc,handover_success,2469.485
+study2_07,mpc,handover_start,2480.763
+study2_07, mpc,handover_success,2483.762
+study2_07,mpc,handover_start,2494.989
+study2_07, mpc,handover_success,2497.988
+study2_07,mpc,handover_start,2509.265
+study2_07, mpc,handover_success,2512.515
+study2_07,mpc,handover_start,2523.791
+study2_07, mpc,handover_success,2526.791
+study2_07,mpc,handover_start,2538.067
+study2_07, mpc,handover_success,2542.318
+study2_07,mpc,handover_start,2553.594
+study2_07, mpc,handover_success,2557.844
+study2_07,mpc,test_end,2560.645
+study2_07,mpc,test_duration,250.74
+study2_07,mpc,test_robot_idle,147.1
+study2_07,mpc,test_human_idle,170.1
+study2_07,mpc,test_safety_zone_duration,0.1
