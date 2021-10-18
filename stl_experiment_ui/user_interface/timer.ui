@@ -444,10 +444,16 @@
    <property name="geometry">
     <rect>
      <x>100</x>
-     <y>160</y>
+     <y>180</y>
      <width>111</width>
      <height>51</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="whatsThis">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="layoutDirection">
     <enum>Qt::LeftToRight</enum>
@@ -487,7 +493,7 @@ color: rgb(255, 255, 255);</string>
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>60</y>
+     <y>90</y>
      <width>251</width>
      <height>81</height>
     </rect>
@@ -941,7 +947,7 @@ color: rgb(255, 255, 255);</string>
      <x>6</x>
      <y>30</y>
      <width>301</width>
-     <height>20</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="font">
@@ -953,7 +959,7 @@ color: rgb(255, 255, 255);</string>
     <string notr="true">color: rgb(255, 255, 255);</string>
    </property>
    <property name="text">
-    <string>Could not reach in specified time</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;I won't be able to reach your hand &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;within the specified time limit&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

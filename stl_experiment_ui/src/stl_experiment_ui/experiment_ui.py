@@ -302,25 +302,32 @@ class STLdesignUI(Plugin):
         pass
 
     def generate_controller(self):
-        self.slider1value = float(self._widget.stl_g_val.toPlainText())
-        self.slider2value = float(self._widget.stl_y_val.toPlainText())
-        self.slider3value = float(self._widget.stl_r_val.toPlainText())
+        # self.slider1value = max(min(self.slider1value, self.max_sec), self.min_sec)
+        # self.slider2value = max(min(self.slider2value, self.max_sec), self.min_sec)
+        # self.slider3value = max(min(self.slider3value, self.max_sec), self.min_sec)
 
-        self.slider1value = max(min(self.slider1value, self.max_sec), self.min_sec)
-        self.slider2value = max(min(self.slider2value, self.max_sec), self.min_sec)
-        self.slider3value = max(min(self.slider3value, self.max_sec), self.min_sec)
+        self._widget.horizontalSlider.setStart(float(self._widget.stl_gnot_val.toPlainText())*10.0)
+        self._widget.horizontalSlider_2.setStart(float(self._widget.stl_ynot_val.toPlainText())*10.0)
+        self._widget.horizontalSlider_3.setStart(float(self._widget.stl_rnot_val.toPlainText())*10.0)
+        self._widget.horizontalSlider.setEnd(float(self._widget.stl_g_val.toPlainText())*10.0)
+        self._widget.horizontalSlider_2.setEnd(float(self._widget.stl_y_val.toPlainText())*10.0)
+        self._widget.horizontalSlider_3.setEnd(float(self._widget.stl_r_val.toPlainText())*10.0)
 
-        self.slider4value = float(self._widget.stl_g_val_2.toPlainText())
-        self.slider5value = float(self._widget.stl_y_val_2.toPlainText())
-        self.slider6value = float(self._widget.stl_r_val_2.toPlainText())
+        self.slider1value = self._widget.horizontalSlider.start()/10.0
+        self.slider2value = self._widget.horizontalSlider_2.start()/10.0
+        self.slider3value = self._widget.horizontalSlider_3.start()/10.0
 
-        rospy.set_param('mpc_t_1', self.slider1value)
-        rospy.set_param('mpc_t_2', self.slider2value)
-        rospy.set_param('mpc_t_3', self.slider3value)
+        self.slider4value = self._widget.horizontalSlider.end()/10.0
+        self.slider5value = self._widget.horizontalSlider_2.end()/10.0
+        self.slider6value = self._widget.horizontalSlider_3.end()/10.0
 
-        rospy.set_param('mpc_tnot_1', self.slider4value)
-        rospy.set_param('mpc_tnot_2', self.slider5value)
-        rospy.set_param('mpc_tnot_3', self.slider6value)
+        rospy.set_param('mpc_tnot_1', self.slider1value)
+        rospy.set_param('mpc_tnot_2', self.slider2value)
+        rospy.set_param('mpc_tnot_3', self.slider3value)
+
+        rospy.set_param('mpc_t_1', self.slider4value)
+        rospy.set_param('mpc_t_2', self.slider5value)
+        rospy.set_param('mpc_t_3', self.slider6value)
 
         
     def changeValueSlider1(self):
