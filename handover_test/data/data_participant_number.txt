@@ -174,3 +174,4 @@ participant_number,mpc,test_duration,271.47
 participant_number,mpc,test_robot_idle,150.7
 participant_number,mpc,test_human_idle,128.1
 participant_number,mpc,test_safety_zone_duration,1.5
+participant_number,pid,design_start,0.032

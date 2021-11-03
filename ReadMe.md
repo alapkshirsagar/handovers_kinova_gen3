@@ -10,16 +10,16 @@ path is in ``/CatkinWorkspaces/HandoversKinovaGen3/``.
 
 Terminal-1 (Kinova Driver)
 ```
-export ROS_MASTER_URI=http://192.168.0.123:11311
-export ROS_IP=192.168.0.123
+export ROS_MASTER_URI=http://192.168.0.124:11311
+export ROS_IP=192.168.0.124
 source devel/setup.bash
 roslaunch kortex_driver kortex_driver.launch gripper:=robotiq_2f_85
 ```
 
 Terminal-2 (ROS-Motive bridge)
 ```
-export ROS_MASTER_URI=http://192.168.0.123:11311
-export ROS_IP=192.168.0.123
+export ROS_MASTER_URI=http://192.168.0.124:11311
+export ROS_IP=192.168.0.124
 source devel/setup.bash
 roslaunch mocap_optitrack mocap.launch
 
@@ -27,7 +27,7 @@ roslaunch mocap_optitrack mocap.launch
 
 Terminal-3 (Data logger)
 ```
-export ROS_IP=192.168.0.123
+export ROS_IP=192.168.0.124
 source devel/setup.bash
 rosrun handover_test data_logger.py participant_number
 ```
@@ -35,21 +35,21 @@ rosrun handover_test data_logger.py participant_number
 Terminal-4 (User Interface)
 ```
 export PYTHONPATH=$PYTHONPATH:/home/alap/AlapWS/HandoversKinovaGen3/src/handovers_kinova_gen3/stl_experiment_ui/src/stl_experiment_ui
-export ROS_IP=192.168.0.123
+export ROS_IP=192.168.0.124
 source devel/setup.bash
 rqt --standalone stl_experiment_ui --args design mpc
 ```
 
 Terminal-5 (SoundPlay)
 ```
-export ROS_IP=192.168.0.123
+export ROS_IP=192.168.0.124
 source devel/setup.bash
 roslaunch handover_test human_safety_check.launch
 ```
 
 Terminal-6 (Main Controller)
 ```
-export ROS_IP=192.168.0.123
+export ROS_IP=192.168.0.124
 source devel/setup.bash
 rosrun handover_test task_planner.py design mpc
 ```
