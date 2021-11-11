@@ -77,8 +77,12 @@ class HandoverConfig(object):
     fixed_handover_location = [0.6, 0, 0.4]
 
     # Robot home location (in robot frame)
-    object_location = [0.409,-0.05,0.153]
-    hover_location = [0.409,-0.05,0.153+0.1]
+    # object_location = [0.409,-0.05,0.153]
+    object_location = [0.395,-0.162,0.165]
+
+    # hover_location = [0.409,-0.05,0.153+0.1]
+    hover_location = [0.395,-0.162,0.165+0.1]
+
     object_orientation = [180,0,90]
 
     # Robot home location (in OptiTrack frame)
