@@ -32,13 +32,13 @@ class HandoverConfig(object):
 
     # safety_zone_boundaries = [0.1, 0.5, 0.12, 1.1] # [x_min, x_max, y_min, y_max] #rectuangular non allowed region - v1
 
-    safety_zone_boundaries = [0.156, 0.679, -0.12, 1.30] # [x_min, x_max, y_min, y_max] #rectangular non allowed region 
+    safety_zone_boundaries = [-0.1, 0.6, -0.23, 1.1] # [x_min, x_max, y_min, y_max] #rectangular non allowed region 
 
-    safety_zone_allowed1_boundaries= [0.105, 0.51 , -0.12, 0.155] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 1
+    safety_zone_allowed1_boundaries= [-0.15, 0.3 , -0.3, 0.0] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 1
 
-    safety_zone_allowed2_boundaries= [0.51, 0.69, 0.42, 0.82] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 2
+    safety_zone_allowed2_boundaries= [0.3, 0.6, 0.22, 0.6] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 2
 
-    safety_zone_allowed3_boundaries= [0.12, 0.49, 0.99, 1.34] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 3
+    safety_zone_allowed3_boundaries= [0.0, 0.44, 0.8, 1.17] # [x_min, x_max, y_min, y_max] #rectangular allowed region - package 3
 
     retreat_kp = 1.0
 
