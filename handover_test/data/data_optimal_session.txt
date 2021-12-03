@@ -1,0 +1,56 @@
+optimal_session,mpc,design_start,0.031
+optimal_session,mpc,design_start,31.066
+optimal_session,mpc,handover_start,56.471
+optimal_session, mpc,handover_fail,58.221
+optimal_session,mpc,handover_start,79.398
+optimal_session, mpc,handover_success,81.648
+optimal_session,mpc,handover_start,403.848
+optimal_session, mpc,handover_success,406.098
+optimal_session,mpc,design_end,447.692
+optimal_session,mpc,design_duration,416.63
+optimal_session,mpc,design_no_handovers,0
+optimal_session,mpc,design_robot_idle,392.2
+optimal_session,mpc,design_human_idle,278.0
+optimal_session,mpc,train_safety_zone_duration,0.3
+optimal_session,mpc,test_start,450.178
+optimal_session,mpc,handover_start,458.603
+optimal_session, mpc,handover_success,460.103
+optimal_session,mpc,handover_start,471.355
+optimal_session, mpc,handover_success,472.605
+optimal_session,mpc,handover_start,483.655
+optimal_session, mpc,handover_success,484.655
+optimal_session,mpc,handover_start,495.481
+optimal_session, mpc,handover_success,497.481
+optimal_session,mpc,handover_start,508.382
+optimal_session, mpc,handover_success,510.382
+optimal_session,mpc,handover_start,521.133
+optimal_session, mpc,handover_success,523.133
+optimal_session,mpc,handover_start,533.685
+optimal_session, mpc,handover_success,536.184
+optimal_session,mpc,handover_start,547.185
+optimal_session, mpc,handover_success,549.435
+optimal_session,mpc,handover_start,560.711
+optimal_session, mpc,handover_success,562.961
+optimal_session,mpc,handover_start,574.237
+optimal_session, mpc,handover_success,576.237
+optimal_session,mpc,handover_start,587.238
+optimal_session, mpc,handover_success,589.488
+optimal_session,mpc,handover_start,600.689
+optimal_session, mpc,handover_success,602.939
+optimal_session,mpc,handover_start,614.115
+optimal_session, mpc,handover_success,617.365
+optimal_session,mpc,handover_start,628.642
+optimal_session, mpc,handover_success,631.642
+optimal_session,mpc,handover_start,642.867
+optimal_session, mpc,handover_success,646.117
+optimal_session,mpc,handover_start,657.369
+optimal_session, mpc,handover_success,660.368
+optimal_session,mpc,handover_start,671.396
+optimal_session, mpc,handover_success,675.395
+optimal_session,mpc,handover_start,686.196
+optimal_session, mpc,handover_success,690.196
+optimal_session,mpc,test_end,692.371
+optimal_session,mpc,test_duration,242.19
+optimal_session,mpc,test_robot_idle,137.9
+optimal_session,mpc,test_human_idle,160.6
+optimal_session,mpc,test_safety_zone_duration,0.9
