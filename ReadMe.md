@@ -1,3 +1,6 @@
+Paper: *Kshirsagar, A., *Ravi R. K., Kress-Gazit, H., & Hoffman, G., Timing-Specified Controllers with Feedback for Human-Robot Handovers, IEEE International Conference on Robot and Human Interactive Communication (RO-MAN), 2022
+(https://alapkshirsagar.github.io/papers/timinghandovers-roman)
+
 ## Steps to run the system
 Connect all PCs to HRC2 WiFi
 
